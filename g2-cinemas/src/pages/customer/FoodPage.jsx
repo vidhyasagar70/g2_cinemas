@@ -191,17 +191,17 @@ export const FoodPage = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 pb-12">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-4 sm:space-y-8 pb-28">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#292929] pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 border-b border-[#292929] pb-4 sm:pb-6">
         <div>
-          <span className="text-xs uppercase tracking-widest font-extrabold text-[#FFC914] block mb-1">
+          <span className="text-[10px] sm:text-xs uppercase tracking-widest font-extrabold text-[#FFC914] block mb-0.5 sm:mb-1">
             G2 GOURMET KITCHEN & CANTEEN • VADIPATTI
           </span>
-          <h1 className="text-3xl font-black text-white">
+          <h1 className="text-xl sm:text-3xl font-black text-white">
             Cinematic Food & Beverages
           </h1>
-          <p className="text-xs text-[#A1A1AA] mt-1">
+          <p className="text-[11px] sm:text-xs text-[#A1A1AA] mt-0.5 sm:mt-1">
             Order theatre-fresh popcorn, combos, and snacks delivered directly to your seat in Screen 1 or Screen 2.
           </p>
         </div>
@@ -265,44 +265,52 @@ export const FoodPage = () => {
       )}
 
       {/* Main Grid: Products on Left, Cart on Right */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         {/* Left Column (2 cols) */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Categories and Veg Toggle */}
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-              {PRODUCT_CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                    activeCategory === cat
-                      ? "bg-[#FFC914] text-black shadow-md shadow-[#FFC914]/20"
-                      : "bg-[#141414] hover:bg-[#202020] text-[#A1A1AA] hover:text-white border border-[#292929]"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+          {/* Categories and Veg Toggle - Sticky on Mobile for Instant Category Switching */}
+          <div className="sticky top-14 md:static z-20 bg-[#080808]/95 md:bg-transparent backdrop-blur-md md:backdrop-blur-none py-2 md:py-0 -mx-3 px-3 md:mx-0 md:px-0 border-b border-[#222] md:border-b-0 flex items-center justify-between gap-2 overflow-hidden">
+            <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none flex-1">
+              {PRODUCT_CATEGORIES.map((cat) => {
+                const count = cat === "All"
+                  ? products.filter((p) => p.isAvailable && (!filterVegOnly || p.isVeg)).length
+                  : cat === "Recommended"
+                  ? products.filter((p) => p.isAvailable && (p.isRecommended || p.isPopular) && (!filterVegOnly || p.isVeg)).length
+                  : products.filter((p) => p.isAvailable && p.category?.toLowerCase() === cat.toLowerCase() && (!filterVegOnly || p.isVeg)).length;
+
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveCategory(cat)}
+                    className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                      activeCategory === cat
+                        ? "bg-[#FFC914] text-black shadow-md shadow-[#FFC914]/20 font-black"
+                        : "bg-[#141414] hover:bg-[#202020] text-[#A1A1AA] hover:text-white border border-[#292929]"
+                    }`}
+                  >
+                    {cat} <span className="opacity-70 text-[10px]">({count})</span>
+                  </button>
+                );
+              })}
             </div>
 
             <button
               onClick={() => setFilterVegOnly(!filterVegOnly)}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer ${
+              className={`flex items-center gap-1 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold border transition cursor-pointer shrink-0 ${
                 filterVegOnly
                   ? "bg-[#22C55E]/15 border-[#22C55E] text-[#22C55E]"
                   : "bg-[#141414] border-[#292929] text-[#888] hover:text-white"
               }`}
             >
-              <span className="w-2.5 h-2.5 rounded-full border border-green-500 flex items-center justify-center p-0.5">
+              <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full border border-green-500 flex items-center justify-center p-0.5">
                 <span className="w-full h-full rounded-full bg-green-500" />
               </span>
-              <span>Veg Only</span>
+              <span>Veg</span>
             </button>
           </div>
 
-          {/* Product Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+          {/* Product Cards Grid - 2 per row on mobile */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2.5 sm:gap-4">
             {filteredProducts.map((product) => {
               const inCart = cart.find((i) => i.id === product.id);
               const qty = inCart ? inCart.quantity : 0;
@@ -310,13 +318,14 @@ export const FoodPage = () => {
               return (
                 <div
                   key={product.id}
-                  className="bg-[#141414] rounded-xl sm:rounded-2xl border border-[#292929] p-3 sm:p-4 flex gap-3 sm:gap-4 hover:border-[#FFC914]/40 transition-all group overflow-hidden"
+                  className="bg-[#141414] rounded-xl sm:rounded-2xl border border-[#292929] p-2 sm:p-3.5 flex flex-col sm:flex-row gap-2 sm:gap-3.5 hover:border-[#FFC914]/40 transition-all group overflow-hidden"
                 >
-                  <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg sm:rounded-xl overflow-hidden bg-[#1f1f1f] shrink-0 relative">
+                  <div className="w-full h-24 sm:w-24 sm:h-24 rounded-lg sm:rounded-xl overflow-hidden bg-[#1f1f1f] shrink-0 relative">
                     <img
                       src={product.image}
                       alt={product.name}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      loading="lazy"
                     />
                     {product.isPopular && (
                       <span className="absolute top-1 left-1 bg-[#FFC914] text-black text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded shadow">
@@ -329,7 +338,7 @@ export const FoodPage = () => {
                     <div>
                       <div className="flex items-center gap-1.5">
                         <div
-                          className={`w-3 h-3 sm:w-3.5 sm:h-3.5 border rounded-sm flex items-center justify-center p-0.5 shrink-0 ${
+                          className={`w-3 h-3 sm:w-3.5 sm:h-3.5 border rounded-xs flex items-center justify-center p-0.5 shrink-0 ${
                             product.isVeg ? "border-[#22C55E]" : "border-[#EF4444]"
                           }`}
                         >
@@ -343,7 +352,7 @@ export const FoodPage = () => {
                           {product.name}
                         </h4>
                       </div>
-                      <p className="text-[10px] sm:text-[11px] text-[#777] line-clamp-1 sm:line-clamp-2 mt-0.5 leading-snug">
+                      <p className="text-[10px] sm:text-[11px] text-[#777] line-clamp-1 mt-0.5 leading-snug">
                         {product.description}
                       </p>
                     </div>
@@ -354,29 +363,29 @@ export const FoodPage = () => {
                       </span>
 
                       {qty > 0 ? (
-                        <div className="flex items-center gap-1.5 sm:gap-2 bg-[#202020] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg sm:rounded-xl border border-[#333]">
+                        <div className="flex items-center gap-1 sm:gap-2 bg-[#202020] px-1 sm:px-2 py-0.5 sm:py-1 rounded-lg border border-[#333]">
                           <button
                             onClick={() => updateQty(product.id, -1)}
                             className="text-[#FFC914] hover:text-white p-0.5 cursor-pointer"
                           >
-                            <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                            <Minus className="w-3 h-3" />
                           </button>
-                          <span className="text-[11px] sm:text-xs font-bold text-white w-3 sm:w-4 text-center">
+                          <span className="text-[11px] sm:text-xs font-bold text-white w-3 text-center">
                             {qty}
                           </span>
                           <button
                             onClick={() => updateQty(product.id, 1)}
                             className="text-[#FFC914] hover:text-white p-0.5 cursor-pointer"
                           >
-                            <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                            <Plus className="w-3 h-3" />
                           </button>
                         </div>
                       ) : (
                         <button
                           onClick={() => addToCart(product)}
-                          className="bg-[#222] hover:bg-[#FFC914] hover:text-black text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold border border-[#333] transition cursor-pointer flex items-center gap-1 shrink-0"
+                          className="bg-[#222] hover:bg-[#FFC914] hover:text-black text-white px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold border border-[#333] transition cursor-pointer flex items-center gap-0.5 sm:gap-1 shrink-0"
                         >
-                          <Plus className="w-3 h-3" />
+                          <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                           <span>Add</span>
                         </button>
                       )}
@@ -388,8 +397,8 @@ export const FoodPage = () => {
           </div>
         </div>
 
-        {/* Right Column: Reduced Size Cart Panel */}
-        <div className="lg:col-span-1">
+        {/* Right Column: Desktop Cart Panel (hidden on mobile to eliminate excessive scrolling) */}
+        <div className="hidden lg:block lg:col-span-1">
           <div className="bg-[#141414] rounded-xl sm:rounded-2xl border border-[#292929] p-3.5 sm:p-5 space-y-3 sm:space-y-4 sticky top-24">
             <div className="flex items-center justify-between border-b border-[#292929] pb-2.5">
               <div className="flex items-center gap-2">

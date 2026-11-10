@@ -38,7 +38,7 @@ export const FoodSelectionPage = () => {
     }
   }, [isAuthenticated, navigate]);
 
-  const [activeCategory, setActiveCategory] = useState("Recommended");
+  const [activeCategory, setActiveCategory] = useState("All");
   const [filterVegOnly, setFilterVegOnly] = useState(false);
 
   // Available and active products
@@ -53,7 +53,7 @@ export const FoodSelectionPage = () => {
       if (activeCategory === "Recommended") {
         matchesCat = product.isRecommended || product.isPopular;
       } else if (activeCategory !== "All") {
-        matchesCat = product.category === activeCategory;
+        matchesCat = product.category.toLowerCase() === activeCategory.toLowerCase();
       }
 
       const matchesVeg = filterVegOnly ? product.isVeg : true;
@@ -74,27 +74,27 @@ export const FoodSelectionPage = () => {
   };
 
   return (
-    <div className="space-y-6 pb-24">
+    <div className="space-y-4 sm:space-y-6 pb-20">
       {/* Step indicator */}
       <BookingProgress currentStep={3} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#292929] pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-[#292929] pb-4 sm:pb-6">
           <div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5">
               <button
                 onClick={() => navigate("/book/seats")}
                 className="p-1.5 rounded-lg bg-[#171717] text-[#888] hover:text-white border border-[#292929] transition cursor-pointer"
               >
                 <ArrowLeft className="w-4 h-4" />
               </button>
-              <h1 className="text-2xl sm:text-3xl font-black text-white">
+              <h1 className="text-xl sm:text-3xl font-black text-white">
                 Add something delicious
               </h1>
             </div>
-            <p className="text-xs sm:text-sm text-[#A1A1AA] mt-1">
-              We'll have it ready for your show. You can also skip this step.
+            <p className="text-[11px] sm:text-sm text-[#A1A1AA] mt-0.5 sm:mt-1">
+              Fresh canteen treats ready for your show. You can also skip this step.
             </p>
           </div>
 
@@ -107,45 +107,53 @@ export const FoodSelectionPage = () => {
         </div>
 
         {/* Main Grid: Products on Left, Shopping Cart on Right */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
           {/* Left Column (2 cols): Categories & Food Cards */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Category Filter Pills & Veg Only Toggle */}
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-                {PRODUCT_CATEGORIES.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
-                      activeCategory === cat
-                        ? "bg-[#FFC914] text-black shadow-md shadow-[#FFC914]/20"
-                        : "bg-[#141414] hover:bg-[#202020] text-[#A1A1AA] hover:text-white border border-[#292929]"
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
+            {/* Category Filter Pills & Veg Only Toggle - Sticky on Mobile */}
+            <div className="sticky top-0 md:static z-20 bg-[#080808]/95 md:bg-transparent backdrop-blur-md md:backdrop-blur-none py-2 md:py-0 -mx-3 px-3 md:mx-0 md:px-0 border-b border-[#222] md:border-b-0 flex items-center justify-between gap-2 overflow-hidden">
+              <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 scrollbar-none flex-1">
+                {PRODUCT_CATEGORIES.map((cat) => {
+                  const count = cat === "All"
+                    ? availableProducts.filter(p => !filterVegOnly || p.isVeg).length
+                    : cat === "Recommended"
+                    ? availableProducts.filter(p => (p.isRecommended || p.isPopular) && (!filterVegOnly || p.isVeg)).length
+                    : availableProducts.filter(p => p.category.toLowerCase() === cat.toLowerCase() && (!filterVegOnly || p.isVeg)).length;
+
+                  return (
+                    <button
+                      key={cat}
+                      onClick={() => setActiveCategory(cat)}
+                      className={`px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                        activeCategory === cat
+                          ? "bg-[#FFC914] text-black shadow-md shadow-[#FFC914]/20 font-black"
+                          : "bg-[#141414] hover:bg-[#202020] text-[#A1A1AA] hover:text-white border border-[#292929]"
+                      }`}
+                    >
+                      {cat} <span className="opacity-70 text-[10px]">({count})</span>
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Veg Toggle */}
               <button
                 onClick={() => setFilterVegOnly(!filterVegOnly)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold border transition cursor-pointer ${
+                className={`flex items-center gap-1 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold border transition cursor-pointer shrink-0 ${
                   filterVegOnly
                     ? "bg-[#22C55E]/15 border-[#22C55E] text-[#22C55E]"
                     : "bg-[#141414] border-[#292929] text-[#888] hover:text-white"
                 }`}
               >
-                <span className="w-2.5 h-2.5 rounded-full border border-green-500 flex items-center justify-center p-0.5">
+                <span className="w-2 sm:w-2.5 h-2 sm:h-2.5 rounded-full border border-green-500 flex items-center justify-center p-0.5">
                   <span className="w-full h-full rounded-full bg-green-500" />
                 </span>
-                <span>Veg Only</span>
+                <span>Veg</span>
               </button>
             </div>
 
-            {/* Food Products Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+            {/* Food Products Grid - 2 per row on mobile */}
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-2.5 sm:gap-4">
               {filteredProducts.map((product) => {
                 const cartItem = foodCart.find((item) => item.id === product.id);
                 const quantity = cartItem ? cartItem.quantity : 0;
@@ -153,17 +161,18 @@ export const FoodSelectionPage = () => {
                 return (
                   <div
                     key={product.id}
-                    className="bg-[#141414] rounded-2xl border border-[#292929] p-3 sm:p-4 flex gap-3 sm:gap-4 hover:border-[#FFC914]/40 transition-all group"
+                    className="bg-[#141414] rounded-xl sm:rounded-2xl border border-[#292929] p-2 sm:p-3.5 flex flex-col sm:flex-row gap-2 sm:gap-3.5 hover:border-[#FFC914]/40 transition-all group overflow-hidden"
                   >
                     {/* Food Image */}
-                    <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-[#1f1f1f] shrink-0 relative">
+                    <div className="w-full h-24 sm:w-24 sm:h-24 rounded-lg sm:rounded-xl overflow-hidden bg-[#1f1f1f] shrink-0 relative">
                       <img
                         src={product.image}
                         alt={product.name}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                        loading="lazy"
                       />
                       {product.isPopular && (
-                        <span className="absolute top-1 left-1 bg-[#FFC914] text-black text-[9px] font-black px-1.5 py-0.2 rounded shadow">
+                        <span className="absolute top-1 left-1 bg-[#FFC914] text-black text-[8px] sm:text-[9px] font-black px-1.5 py-0.2 rounded shadow">
                           POPULAR
                         </span>
                       )}
@@ -175,7 +184,7 @@ export const FoodSelectionPage = () => {
                         <div className="flex items-center gap-1.5">
                           {/* Veg/Non-Veg icon */}
                           <div
-                            className={`w-3.5 h-3.5 border rounded-sm flex items-center justify-center p-0.5 shrink-0 ${
+                            className={`w-3 h-3 sm:w-3.5 sm:h-3.5 border rounded-xs flex items-center justify-center p-0.5 shrink-0 ${
                               product.isVeg ? "border-[#22C55E]" : "border-[#EF4444]"
                             }`}
                           >
@@ -189,7 +198,7 @@ export const FoodSelectionPage = () => {
                             {product.name}
                           </h4>
                         </div>
-                        <p className="text-[11px] text-[#777] line-clamp-2 mt-1 leading-relaxed">
+                        <p className="text-[10px] sm:text-[11px] text-[#777] line-clamp-1 mt-0.5 leading-snug">
                           {product.description}
                         </p>
                       </div>
@@ -201,29 +210,29 @@ export const FoodSelectionPage = () => {
                         </span>
 
                         {quantity > 0 ? (
-                          <div className="flex items-center gap-1.5 sm:gap-2 bg-[#202020] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-lg sm:rounded-xl border border-[#333]">
+                          <div className="flex items-center gap-1 sm:gap-2 bg-[#202020] px-1 sm:px-2 py-0.5 sm:py-1 rounded-lg border border-[#333]">
                             <button
                               onClick={() => updateCartQty(product.id, -1)}
                               className="text-[#FFC914] hover:text-white p-0.5 cursor-pointer"
                             >
-                              <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              <Minus className="w-3 h-3" />
                             </button>
-                            <span className="text-[11px] sm:text-xs font-bold text-white w-3 sm:w-4 text-center">
+                            <span className="text-[11px] sm:text-xs font-bold text-white w-3 text-center">
                               {quantity}
                             </span>
                             <button
                               onClick={() => updateCartQty(product.id, 1)}
                               className="text-[#FFC914] hover:text-white p-0.5 cursor-pointer"
                             >
-                              <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
+                              <Plus className="w-3 h-3" />
                             </button>
                           </div>
                         ) : (
                           <button
                             onClick={() => addToCart(product)}
-                            className="bg-[#222] hover:bg-[#FFC914] hover:text-black text-white px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[11px] sm:text-xs font-bold border border-[#333] transition cursor-pointer flex items-center gap-1 shrink-0"
+                            className="bg-[#222] hover:bg-[#FFC914] hover:text-black text-white px-2 py-0.5 sm:px-3 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-bold border border-[#333] transition cursor-pointer flex items-center gap-0.5 sm:gap-1 shrink-0"
                           >
-                            <Plus className="w-3 h-3" />
+                            <Plus className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
                             <span>Add</span>
                           </button>
                         )}
@@ -233,10 +242,20 @@ export const FoodSelectionPage = () => {
                 );
               })}
             </div>
+
+            {/* Mobile Skip Button below snacks list - Zero wasted scrolling */}
+            <div className="lg:hidden pt-2">
+              <button
+                onClick={handleSkip}
+                className="w-full py-2.5 rounded-xl bg-[#141414] hover:bg-[#1f1f1f] text-[#888] hover:text-white border border-[#262626] text-xs font-semibold transition cursor-pointer"
+              >
+                Skip Snacks & Pay Tickets Only →
+              </button>
+            </div>
           </div>
 
-          {/* Right Column: Shopping Cart */}
-          <div className="lg:col-span-1">
+          {/* Right Column: Desktop Shopping Cart (hidden on mobile to prevent excessive scrolling) */}
+          <div className="hidden lg:block lg:col-span-1">
             <div className="bg-[#141414] rounded-2xl border border-[#292929] p-5 space-y-4 sticky top-24">
               <div className="flex items-center justify-between border-b border-[#292929] pb-3">
                 <div className="flex items-center gap-2">
