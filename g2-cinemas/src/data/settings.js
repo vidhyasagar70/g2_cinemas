@@ -4,11 +4,11 @@ export const INITIAL_SETTINGS = {
     tagline: "The Pinnacle of Cinematic Excellence",
     location: "3X7J+P7, Chinnamanayakkanpatti, Vadipatti, Tamil Nadu 625218",
     city: "Vadipatti",
-    availableCities: ["Vadipatti", "Madurai", "Dindigul", "Theni", "Chennai"],
+    availableCities: ["Vadipatti"],
     phone: "+91 94433 12345",
     email: "support@g2cinemas.com",
     gstNumber: "33AABCU9603R1ZM",
-    screensCount: 3,
+    screensCount: 2,
     totalCapacity: 228
   },
   pricing: {

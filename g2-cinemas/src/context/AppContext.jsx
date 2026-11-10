@@ -23,12 +23,18 @@ export const AppProvider = ({ children }) => {
         const parsed = JSON.parse(stored);
         // Migrate old cached location to Vadipatti, Tamil Nadu if found
         let needsSave = false;
-        if (parsed?.cinema?.location?.includes("Koramangala") || parsed?.cinema?.city === "Bengaluru") {
+        if (
+          parsed?.cinema?.location?.includes("Koramangala") ||
+          parsed?.cinema?.city !== "Vadipatti" ||
+          (parsed?.cinema?.availableCities && parsed.cinema.availableCities.length > 1) ||
+          parsed?.cinema?.screensCount !== 2
+        ) {
           parsed.cinema = {
             ...parsed.cinema,
             location: "3X7J+P7, Chinnamanayakkanpatti, Vadipatti, Tamil Nadu 625218",
             city: "Vadipatti",
-            availableCities: ["Vadipatti", "Madurai", "Dindigul", "Theni", "Chennai"],
+            availableCities: ["Vadipatti"],
+            screensCount: 2,
             gstNumber: "33AABCU9603R1ZM"
           };
           needsSave = true;

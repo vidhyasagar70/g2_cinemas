@@ -26,24 +26,16 @@ export const Navbar = () => {
   const { selectedLocation, setSelectedLocation, settings, bookings, orders } = useApp();
   const { isAuthenticated, user, isCustomer, isStaff, logout, switchPortal } = useAuth();
 
-  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Close menus on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
-    setShowLocationDropdown(false);
     setShowProfileModal(false);
   }, [location.pathname]);
 
-  const availableCities = settings.cinema?.availableCities || [
-    "Vadipatti",
-    "Madurai",
-    "Dindigul",
-    "Theni",
-    "Chennai"
-  ];
+  const availableCities = settings.cinema?.availableCities || ["Vadipatti"];
 
   const totalActivityCount = (bookings?.length || 0) + (orders?.length || 0);
 
@@ -155,56 +147,17 @@ export const Navbar = () => {
             </div>
           )}
 
-          {/* Location Selector (Desktop/Tablet) */}
-          <div className="relative hidden sm:block">
-            <button
-              onClick={() => {
-                setShowLocationDropdown(!showLocationDropdown);
-                setShowProfileModal(false);
-              }}
-              className="flex items-center gap-1.5 bg-[#171717] hover:bg-[#222] text-[#A1A1AA] hover:text-white px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg border border-[#292929] text-xs font-semibold transition cursor-pointer"
-            >
-              <MapPin className="w-3.5 h-3.5 text-[#FFC914]" />
-              <span className="text-white">{selectedLocation}</span>
-              <ChevronDown className="w-3.5 h-3.5 ml-0.5" />
-            </button>
-
-            {showLocationDropdown && (
-              <div className="absolute right-0 mt-2 w-48 bg-[#171717] border border-[#292929] rounded-xl shadow-2xl py-1 z-50 animate-in fade-in slide-in-from-top-2">
-                <div className="px-3 py-2 border-b border-[#292929] text-[11px] uppercase tracking-wider text-[#666] font-bold">
-                  Select Cinema City
-                </div>
-                {availableCities.map((city) => (
-                  <button
-                    key={city}
-                    onClick={() => {
-                      setSelectedLocation(city);
-                      setShowLocationDropdown(false);
-                    }}
-                    className={`w-full text-left px-3.5 py-2 text-xs flex items-center justify-between hover:bg-[#222] transition cursor-pointer ${
-                      selectedLocation === city
-                        ? "text-[#FFC914] font-semibold bg-[#202020]"
-                        : "text-[#A1A1AA]"
-                    }`}
-                  >
-                    <span>{city}</span>
-                    {selectedLocation === city && (
-                      <Check className="w-3.5 h-3.5 text-[#FFC914]" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
+          {/* Cinema Location Badge (Vadipatti Only) */}
+          <div className="hidden sm:flex items-center gap-1.5 bg-[#171717] text-white px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-xl border border-[#292929] text-xs font-bold">
+            <MapPin className="w-3.5 h-3.5 text-[#FFC914]" />
+            <span>Vadipatti</span>
           </div>
 
           {/* User Profile / Login Button */}
           {isAuthenticated && user ? (
             <div className="relative">
               <button
-                onClick={() => {
-                  setShowProfileModal(!showProfileModal);
-                  setShowLocationDropdown(false);
-                }}
+                onClick={() => setShowProfileModal(!showProfileModal)}
                 className={`flex items-center gap-1.5 sm:gap-2 bg-[#171717] hover:bg-[#222] border rounded-xl px-2 sm:px-2.5 py-1.5 text-xs text-white transition cursor-pointer group ${
                   isStaff ? "border-[#FFC914]/50" : "border-[#292929]"
                 }`}
@@ -361,27 +314,24 @@ export const Navbar = () => {
       {/* Mobile Slide-down Menu Drawer */}
       {isMobileMenuOpen && (
         <div className="md:hidden bg-[#0e0e0e] border-b border-[#292929] px-4 py-4 space-y-4 animate-in slide-in-from-top-3 duration-200">
-          {/* Cinema Location Selector on Mobile */}
-          <div className="bg-[#141414] p-3 rounded-2xl border border-[#252525] space-y-2">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFC914] flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              <span>Cinema City: {selectedLocation}</span>
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {availableCities.map((city) => (
-                <button
-                  key={city}
-                  onClick={() => setSelectedLocation(city)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-bold transition cursor-pointer ${
-                    selectedLocation === city
-                      ? "bg-[#FFC914] text-black shadow-sm"
-                      : "bg-[#1c1c1c] text-[#888] hover:text-white border border-[#2a2a2a]"
-                  }`}
-                >
-                  {city}
-                </button>
-              ))}
+          {/* Cinema Location on Mobile (Vadipatti Only) */}
+          <div className="bg-[#141414] p-3 rounded-2xl border border-[#252525] flex items-center justify-between">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-[#FFC914]/15 border border-[#FFC914]/30 text-[#FFC914] flex items-center justify-center">
+                <MapPin className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#FFC914] block leading-none">
+                  THEATRE LOCATION
+                </span>
+                <span className="text-xs font-bold text-white mt-1 block">
+                  Vadipatti • Tamil Nadu
+                </span>
+              </div>
             </div>
+            <span className="text-[10px] bg-[#1a1a1a] border border-[#333] px-2.5 py-0.5 rounded text-[#FFC914] font-semibold">
+              Screens 1 & 2
+            </span>
           </div>
 
           {/* Navigation Links */}
