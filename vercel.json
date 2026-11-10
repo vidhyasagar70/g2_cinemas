@@ -1,0 +1,7 @@
+{
+  "buildCommand": "cd g2-cinemas && npm install && npm run build",
+  "outputDirectory": "g2-cinemas/dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

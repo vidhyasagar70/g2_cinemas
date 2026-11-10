@@ -1,0 +1,10 @@
+{
+  "name": "g2-cinemas-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm --prefix g2-cinemas run dev",
+    "build": "npm --prefix g2-cinemas run build",
+    "start": "npm --prefix g2-cinemas run preview"
+  }
+}
