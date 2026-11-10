@@ -72,13 +72,55 @@ export const MovieDetailsPage = () => {
   };
 
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-4 sm:space-y-8 pb-8">
       {/* Booking Progress Indicator */}
       <BookingProgress currentStep={1} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-        {/* Movie Header & Banner Card */}
-        <div className="relative rounded-3xl overflow-hidden bg-[#141414] border border-[#292929] shadow-2xl">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
+        {/* Mobile Compact Movie Header (md:hidden) - Zero wasted space */}
+        <div className="md:hidden bg-[#141414] border border-[#262626] rounded-2xl p-3 flex gap-3 items-center shadow-lg">
+          {/* Compact Poster */}
+          <div className="w-16 h-22 rounded-xl overflow-hidden shadow-md border border-[#333] shrink-0 bg-[#0d0d0d]">
+            <img
+              src={movie.poster}
+              alt={movie.title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Movie Details */}
+          <div className="flex-1 min-w-0 space-y-1">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="bg-[#222] border border-[#333] px-1.5 py-0.5 rounded text-white font-bold text-[10px]">
+                {movie.ageRating}
+              </span>
+              <span className="flex items-center gap-1 text-white text-xs font-bold bg-[#1a1a1a] px-1.5 py-0.5 rounded border border-[#333]">
+                <Star className="w-3 h-3 fill-[#FFC914] text-[#FFC914]" />
+                {movie.rating}/10
+              </span>
+              <span className="flex items-center gap-1 text-[11px] text-[#A1A1AA]">
+                <Clock className="w-3 h-3 text-[#FFC914]" />
+                {movie.duration}
+              </span>
+            </div>
+
+            <h1 className="text-base font-black text-white truncate leading-snug">
+              {movie.title}
+            </h1>
+
+            <p className="text-[11px] text-[#888] truncate">
+              {movie.genre?.join(", ")} • {movie.languages?.join(", ")}
+            </p>
+
+            <div className="flex items-center gap-1.5 text-[10px] font-semibold text-[#FFC914]">
+              <Sparkles className="w-3 h-3 text-[#FFC914] shrink-0" />
+              <span>Screens 1 & 2 • Dolby Atmos</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Cinematic Banner & Movie Details (hidden md:block) */}
+        <div className="hidden md:block relative rounded-3xl overflow-hidden bg-[#141414] border border-[#292929] shadow-2xl">
           {/* Banner Backdrop */}
           <div
             className="w-full h-80 sm:h-96 bg-cover bg-center relative"
@@ -165,15 +207,15 @@ export const MovieDetailsPage = () => {
           </div>
         </div>
 
-        {/* 5.3 Showtime Selection Section */}
-        <div className="space-y-6">
+        {/* Showtime Selection Section */}
+        <div className="space-y-3 sm:space-y-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-white">
+              <h2 className="text-base sm:text-2xl font-black text-white">
                 Select Date & Showtime
               </h2>
-              <p className="text-xs text-[#A1A1AA] mt-1">
-                Choose your preferred screen format and auditorium timing.
+              <p className="text-[11px] sm:text-xs text-[#A1A1AA] mt-0.5 sm:mt-1">
+                Choose your date and auditorium timing.
               </p>
             </div>
 
@@ -194,27 +236,27 @@ export const MovieDetailsPage = () => {
             </div>
           </div>
 
-          {/* Horizontal Date Cards Selector */}
-          <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none">
+          {/* Horizontal Date Cards Selector - Sleek & Compact, No Overlay */}
+          <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto pb-1 sm:pb-2 scrollbar-none">
             {availableDates.map((item) => {
               const isSelected = selectedDate === item.dateStr;
               return (
                 <button
                   key={item.dateStr}
                   onClick={() => setSelectedDate(item.dateStr)}
-                  className={`min-w-[85px] sm:min-w-[95px] p-3 rounded-2xl border text-center transition-all duration-200 cursor-pointer ${
+                  className={`min-w-[58px] sm:min-w-[90px] py-1.5 px-2 sm:p-3 rounded-xl sm:rounded-2xl border text-center transition-all duration-150 cursor-pointer shrink-0 ${
                     isSelected
-                      ? "bg-[#FFC914] text-black border-[#FFC914] shadow-lg shadow-[#FFC914]/25 scale-105 font-bold"
+                      ? "bg-[#FFC914] text-black border-[#FFC914] shadow-md shadow-[#FFC914]/20 font-black"
                       : "bg-[#141414] hover:bg-[#1f1f1f] border-[#292929] text-[#A1A1AA] hover:text-white"
                   }`}
                 >
-                  <span className="text-[11px] uppercase tracking-wider block font-semibold opacity-80">
+                  <span className="text-[10px] sm:text-[11px] uppercase tracking-wider block font-bold opacity-80">
                     {item.day}
                   </span>
-                  <span className="text-xl sm:text-2xl font-black block my-0.5">
+                  <span className="text-base sm:text-2xl font-black block my-0.5">
                     {item.dateNum}
                   </span>
-                  <span className="text-[10px] uppercase font-bold block opacity-75">
+                  <span className="text-[9px] sm:text-[10px] uppercase font-bold block opacity-75">
                     {item.month}
                   </span>
                 </button>
@@ -223,25 +265,25 @@ export const MovieDetailsPage = () => {
           </div>
 
           {/* Showtimes Grouped by Screen */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {showsByScreen.map((group) => (
               <div
                 key={group.screen.id}
-                className="bg-[#111111] rounded-2xl border border-[#292929] p-5 sm:p-6 space-y-4"
+                className="bg-[#111111] rounded-xl sm:rounded-2xl border border-[#292929] p-3.5 sm:p-6 space-y-3 sm:space-y-4"
               >
                 {/* Screen Header */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#222] pb-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-3 h-3 rounded-full bg-[#FFC914]" />
-                    <h3 className="font-bold text-base text-white">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 sm:gap-2 border-b border-[#222] pb-2.5 sm:pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#FFC914]" />
+                    <h3 className="font-bold text-sm sm:text-base text-white">
                       {group.screen.name}
                     </h3>
-                    <span className="text-xs bg-[#1a1a1a] text-[#888] px-2.5 py-0.5 rounded border border-[#333]">
+                    <span className="text-[10px] sm:text-xs bg-[#1a1a1a] text-[#888] px-2 py-0.5 rounded border border-[#333]">
                       {group.screen.type}
                     </span>
                   </div>
 
-                  <div className="text-xs text-[#888]">
+                  <div className="text-[11px] sm:text-xs text-[#888]">
                     Recliner ₹{group.screen.categories.find((c) => c.name === "Recliner")?.price || 420} •
                     Premium ₹{group.screen.categories.find((c) => c.name === "Premium")?.price || 290} •
                     Standard ₹{group.screen.categories.find((c) => c.name === "Standard")?.price || 190}
@@ -254,7 +296,7 @@ export const MovieDetailsPage = () => {
                     No shows scheduled on this screen for {selectedDate}.
                   </p>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2.5 sm:gap-3">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-3">
                     {group.shows.map((show) => {
                       const isSoldOut = show.status === "Sold Out";
                       const isFillingFast = show.status === "Filling Fast";
@@ -271,7 +313,7 @@ export const MovieDetailsPage = () => {
                           }`}
                         >
                           <div>
-                            <span className="text-sm font-extrabold text-white group-hover:text-[#FFC914] transition-colors block">
+                            <span className="text-xs sm:text-sm font-extrabold text-white group-hover:text-[#FFC914] transition-colors block">
                               {show.time}
                             </span>
                             <span className="text-[10px] text-[#777] block mt-0.5">
@@ -279,9 +321,9 @@ export const MovieDetailsPage = () => {
                             </span>
                           </div>
 
-                          <div className="mt-2.5">
+                          <div className="mt-2 sm:mt-2.5">
                             <span
-                              className={`text-[10px] font-bold px-2 py-0.5 rounded-full inline-block ${
+                              className={`text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded-full inline-block ${
                                 isSoldOut
                                   ? "bg-[#333] text-[#777]"
                                   : isFillingFast
