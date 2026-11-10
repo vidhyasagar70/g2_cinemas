@@ -64,16 +64,16 @@ export const HomePage = () => {
   const activeMovie = carouselMovies[currentSlideIndex] || carouselMovies[0];
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-4 sm:space-y-10 md:space-y-16">
       {/* 5.1 Hero Section - Interactive Carousel of All Now Showing Movies */}
       {carouselMovies.length > 0 && activeMovie && (
-        <>
+        <section className="relative w-full">
           {/* ======================================================== */}
           {/* MOBILE HERO CAROUSEL (< md)                              */}
           {/* Dedicated 16:9 Banner Card with Zero Cutting & Clear Text*/}
           {/* ======================================================== */}
           <div
-            className="md:hidden space-y-3 px-3 pt-3 select-none"
+            className="md:hidden space-y-2.5 px-3 pt-2 select-none"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
@@ -236,7 +236,7 @@ export const HomePage = () => {
           {/* DESKTOP HERO CAROUSEL (>= md)                            */}
           {/* Widescreen Cinematic Theatrical Showcase                 */}
           {/* ======================================================== */}
-          <section
+          <div
             className="hidden md:flex relative w-full overflow-hidden select-none bg-[#080808] items-end md:min-h-[640px] lg:h-[75vh] max-h-[780px] xl:max-h-[820px]"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
@@ -508,14 +508,14 @@ export const HomePage = () => {
               </div>
             </div>
           </div>
-        </section>
-        </>
+        </div>
+      </section>
       )}
 
       {/* Main Content Sections */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-8 sm:space-y-16">
         {/* Filter Tabs: Now Showing vs Coming Soon */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#222] pb-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 border-b border-[#222] pb-3 sm:pb-4">
           <div className="flex items-center gap-2 bg-[#141414] p-1 rounded-xl border border-[#292929]">
             <button
               onClick={() => setActiveTab("NOW_SHOWING")}
