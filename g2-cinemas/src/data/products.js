@@ -1,0 +1,157 @@
+export const INITIAL_PRODUCTS = [
+  {
+    id: "prod-1",
+    name: "Classic Cheese Popcorn",
+    category: "Popcorn",
+    description: "Crispy freshly popped warm corn tossed in premium savory English cheddar cheese powder.",
+    price: 180,
+    image: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?auto=format&fit=crop&w=600&q=80",
+    isVeg: true,
+    isPopular: true,
+    isRecommended: true,
+    stock: 85,
+    isAvailable: true
+  },
+  {
+    id: "prod-2",
+    name: "Blockbuster Combo",
+    category: "Combos",
+    description: "1x Large Cheese Popcorn + 2x Chilled Regular Colas + 1x Crispy Salted Nachos tray.",
+    price: 399,
+    image: "https://images.unsplash.com/photo-1585647347483-22b66260dfff?auto=format&fit=crop&w=600&q=80",
+    isVeg: true,
+    isPopular: true,
+    isRecommended: true,
+    stock: 50,
+    isAvailable: true
+  },
+  {
+    id: "prod-3",
+    name: "Smoky Paneer Burger",
+    category: "Burgers",
+    description: "Juicy marinated cottage cheese patty grilled to perfection with smoky tandoori mayo and crisp lettuce.",
+    price: 220,
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=600&q=80",
+    isVeg: true,
+    isPopular: false,
+    isRecommended: true,
+    stock: 32,
+    isAvailable: true
+  },
+  {
+    id: "prod-4",
+    name: "Chilled Cola (Large)",
+    category: "Beverages",
+    description: "Ice-cold sparkling fountain cola served in a 650ml leak-proof theatre cup.",
+    price: 120,
+    image: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80",
+    isVeg: true,
+    isPopular: true,
+    isRecommended: false,
+    stock: 150,
+    isAvailable: true
+  },
+  {
+    id: "prod-5",
+    name: "Loaded Cheese & Salsa Nachos",
+    category: "Nachos",
+    description: "Crispy golden corn tortilla chips served with warm melted jalapeno queso and zesty tomato salsa.",
+    price: 180,
+    image: "https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?auto=format&fit=crop&w=600&q=80",
+    isVeg: true,
+    isPopular: true,
+    isRecommended: true,
+    stock: 45,
+    isAvailable: true
+  },
+  {
+    id: "prod-6",
+    name: "Golden Caramel Popcorn",
+    category: "Popcorn",
+    description: "Rich crunchy popcorn generously coated with artisan melted butterscotch caramel.",
+    price: 200,
+    image: "https://images.unsplash.com/photo-1505686994434-e3cc5abf1330?auto=format&fit=crop&w=600&q=80",
+    isVeg: true,
+    isPopular: true,
+    isRecommended: true,
+    stock: 60,
+    isAvailable: true
+  },
+  {
+    id: "prod-7",
+    name: "Crispy Fried Chicken Burger",
+    category: "Burgers",
+    description: "Buttermilk marinated fried chicken breast fillet with spicy secret dressing and pickled gherkins.",
+    price: 260,
+    image: "https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=600&q=80",
+    isVeg: false,
+    isPopular: true,
+    isRecommended: false,
+    stock: 28,
+    isAvailable: true
+  },
+  {
+    id: "prod-8",
+    name: "Classic Salted Butter Popcorn",
+    category: "Popcorn",
+    description: "Traditional cinema style fluffy popped kernels drenched in warm golden butter and sea salt.",
+    price: 160,
+    image: "https://images.unsplash.com/photo-1572177812156-58036aae439c?auto=format&fit=crop&w=600&q=80",
+    isVeg: true,
+    isPopular: false,
+    isRecommended: false,
+    stock: 90,
+    isAvailable: true
+  },
+  {
+    id: "prod-9",
+    name: "Peri Peri Crinkle Fries",
+    category: "More",
+    description: "Deep-fried crinkle cut potatoes dusted with hot African birds-eye chili peri-peri spice mix.",
+    price: 150,
+    image: "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=600&q=80",
+    isVeg: true,
+    isPopular: false,
+    isRecommended: false,
+    stock: 40,
+    isAvailable: true
+  },
+  {
+    id: "prod-10",
+    name: "Cold Coffee with Vanilla Float",
+    category: "Beverages",
+    description: "Thick hand-beaten cold brew espresso topped with a scoop of Madagascar vanilla bean ice cream.",
+    price: 170,
+    image: "https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&w=600&q=80",
+    isVeg: true,
+    isPopular: false,
+    isRecommended: false,
+    stock: 35,
+    isAvailable: true
+  },
+  {
+    id: "prod-11",
+    name: "G2 Royal VIP Duo Tub Combo",
+    category: "Combos",
+    description: "1x Large Caramel Popcorn + 1x Large Cheese Popcorn + 2x Cold Coffees + 1x Loaded Nachos.",
+    price: 549,
+    image: "https://images.unsplash.com/photo-1578849278619-e73505e9610f?auto=format&fit=crop&w=600&q=80",
+    isVeg: true,
+    isPopular: true,
+    isRecommended: true,
+    stock: 25,
+    isAvailable: true
+  }
+];
+
+export const PRODUCT_CATEGORIES = [
+  "All",
+  "Recommended",
+  "Popcorn",
+  "Combos",
+  "Beverages",
+  "Burgers",
+  "Nachos",
+  "More"
+];
+
