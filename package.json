@@ -8,3 +8,4 @@
     "start": "npm --prefix g2-cinemas run preview"
   }
 }
+
