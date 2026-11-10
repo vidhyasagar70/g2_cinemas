@@ -7,10 +7,10 @@ import { useApp } from "../context/AppContext";
 
 export const CustomerLayout = () => {
   const location = useLocation();
-  const { bookings, orders } = useApp();
+  const { customerBookings, customerOrders } = useApp();
 
   const isBookingFlow = location.pathname.startsWith("/book");
-  const totalActivityCount = (bookings?.length || 0) + (orders?.length || 0);
+  const totalActivityCount = (customerBookings?.length || 0) + (customerOrders?.length || 0);
 
   const navItems = [
     { name: "Home", path: "/", icon: Film, exact: true },

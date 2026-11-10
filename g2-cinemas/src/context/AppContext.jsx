@@ -16,6 +16,11 @@ export const AppProvider = ({ children }) => {
   const [bookings, setBookings] = useState(() => bookingService.getBookings());
   const [orders, setOrders] = useState(() => canteenService.getOrders());
   const [screens] = useState(INITIAL_SCREENS);
+
+  // Customer Session-Only Bookings & Orders
+  // Starts EMPTY ([]) on every browser session/refresh so customer side shows clean empty state
+  const [customerBookings, setCustomerBookings] = useState([]);
+  const [customerOrders, setCustomerOrders] = useState([]);
   const [settings, setSettings] = useState(() => {
     try {
       const stored = localStorage.getItem("g2_cinemas_settings");
@@ -130,6 +135,13 @@ export const AppProvider = ({ children }) => {
     setBookings(bookingService.getBookings());
     setShows(movieService.getShows()); // updated booked seats
     setOrders(canteenService.getOrders()); // updated if food order included
+
+    // Update customer session bookings and snack orders
+    setCustomerBookings((prev) => [newBooking, ...prev]);
+    if (newBooking.foodOrder) {
+      setCustomerOrders((prev) => [newBooking.foodOrder, ...prev]);
+    }
+
     toast.success(`Booking Confirmed! ID: ${newBooking.id}`);
     return newBooking;
   };
@@ -138,6 +150,9 @@ export const AppProvider = ({ children }) => {
     const updated = bookingService.cancelBooking(bookingId);
     setBookings(bookingService.getBookings());
     setShows(movieService.getShows());
+    setCustomerBookings((prev) =>
+      prev.map((b) => (b.id === bookingId ? { ...b, bookingStatus: "CANCELLED" } : b))
+    );
     toast.success(`Booking ${bookingId} has been cancelled.`);
     return updated;
   };
@@ -175,6 +190,7 @@ export const AppProvider = ({ children }) => {
   const handleCreateStandaloneOrder = (orderPayload) => {
     const newOrder = canteenService.createOrder(orderPayload);
     setOrders(canteenService.getOrders());
+    setCustomerOrders((prev) => [newOrder, ...prev]);
     toast.success(`Order Placed! ID: ${newOrder.id}`);
     return newOrder;
   };
@@ -182,6 +198,9 @@ export const AppProvider = ({ children }) => {
   const handleUpdateOrderStatus = (orderId, newStatus) => {
     const updated = canteenService.updateOrderStatus(orderId, newStatus);
     setOrders(canteenService.getOrders());
+    setCustomerOrders((prev) =>
+      prev.map((o) => (o.id === orderId ? { ...o, status: newStatus } : o))
+    );
     toast.success(`Order #${orderId} moved to ${newStatus}`);
     return updated;
   };
@@ -210,6 +229,8 @@ export const AppProvider = ({ children }) => {
     setProducts(canteenService.getProducts());
     setBookings(bookingService.getBookings());
     setOrders(canteenService.getOrders());
+    setCustomerBookings([]);
+    setCustomerOrders([]);
     setSettings(INITIAL_SETTINGS);
     toast.success("Demo data reset to default successfully!");
   };
@@ -222,6 +243,8 @@ export const AppProvider = ({ children }) => {
         products,
         bookings,
         orders,
+        customerBookings,
+        customerOrders,
         screens,
         settings,
         selectedLocation,

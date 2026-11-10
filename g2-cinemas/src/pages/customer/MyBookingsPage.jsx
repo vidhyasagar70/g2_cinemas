@@ -27,7 +27,7 @@ import { useAuth } from "../../context/AuthContext";
 import { TicketModal } from "../../components/booking/TicketModal";
 
 export const MyBookingsPage = () => {
-  const { bookings, cancelBooking, orders } = useApp();
+  const { customerBookings, cancelBooking, customerOrders } = useApp();
   const { isAuthenticated, user } = useAuth();
 
   // Top-level Section: MOVIES vs SNACKS
@@ -68,8 +68,8 @@ export const MyBookingsPage = () => {
     );
   }
 
-  // Filtered Movie Bookings
-  const filteredBookings = bookings.filter((b) => {
+  // Filtered Movie Bookings for Customer Session
+  const filteredBookings = customerBookings.filter((b) => {
     if (movieTab === "CANCELLED") {
       return b.bookingStatus === "CANCELLED";
     }
@@ -77,9 +77,9 @@ export const MyBookingsPage = () => {
     return movieTab === "UPCOMING" ? true : false;
   });
 
-  // Filtered Snack Orders
+  // Filtered Snack Orders for Customer Session
   const filteredOrders = useMemo(() => {
-    return orders.filter((o) => {
+    return customerOrders.filter((o) => {
       if (snackTab === "PREPARING") {
         return o.status === "NEW" || o.status === "PREPARING";
       }
@@ -88,7 +88,7 @@ export const MyBookingsPage = () => {
       }
       return true; // "ALL"
     });
-  }, [orders, snackTab]);
+  }, [customerOrders, snackTab]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 pb-16">
@@ -163,7 +163,7 @@ export const MyBookingsPage = () => {
                       : "bg-[#222] text-[#888]"
                   }`}
                 >
-                  {bookings.length}
+                  {customerBookings.length}
                 </span>
               </div>
               <p className="text-xs text-[#888] mt-0.5">
@@ -212,7 +212,7 @@ export const MyBookingsPage = () => {
                       : "bg-[#222] text-[#888]"
                   }`}
                 >
-                  {orders.length}
+                  {customerOrders.length}
                 </span>
               </div>
               <p className="text-xs text-[#888] mt-0.5">
@@ -237,12 +237,12 @@ export const MyBookingsPage = () => {
               {
                 id: "UPCOMING",
                 label: "Upcoming Shows",
-                count: bookings.filter((b) => b.bookingStatus !== "CANCELLED").length
+                count: customerBookings.filter((b) => b.bookingStatus !== "CANCELLED").length
               },
               {
                 id: "CANCELLED",
                 label: "Cancelled",
-                count: bookings.filter((b) => b.bookingStatus === "CANCELLED").length
+                count: customerBookings.filter((b) => b.bookingStatus === "CANCELLED").length
               }
             ].map((tab) => (
               <button
@@ -394,16 +394,16 @@ export const MyBookingsPage = () => {
           {/* Sub-Tabs: All, In Kitchen, Completed */}
           <div className="flex items-center gap-2 border-b border-[#222] pb-3">
             {[
-              { id: "ALL", label: "All Snack Orders", count: orders.length },
+              { id: "ALL", label: "All Snack Orders", count: customerOrders.length },
               {
                 id: "PREPARING",
                 label: "In Kitchen / Preparing",
-                count: orders.filter((o) => o.status === "NEW" || o.status === "PREPARING").length
+                count: customerOrders.filter((o) => o.status === "NEW" || o.status === "PREPARING").length
               },
               {
                 id: "COMPLETED",
                 label: "Ready / Delivered",
-                count: orders.filter((o) => o.status === "READY" || o.status === "DELIVERED" || o.status === "COLLECTED").length
+                count: customerOrders.filter((o) => o.status === "READY" || o.status === "DELIVERED" || o.status === "COLLECTED").length
               }
             ].map((tab) => (
               <button

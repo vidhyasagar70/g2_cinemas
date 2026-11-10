@@ -19,9 +19,12 @@ import { useApp } from "../../context/AppContext";
 
 export const ConfirmationPage = () => {
   const { bookingId } = useParams();
-  const { bookings } = useApp();
+  const { bookings, customerBookings } = useApp();
 
-  const booking = bookings.find((b) => b.id === bookingId) || bookings[0];
+  const booking =
+    (customerBookings && customerBookings.find((b) => b.id === bookingId)) ||
+    bookings.find((b) => b.id === bookingId) ||
+    bookings[0];
 
   useEffect(() => {
     // Fire celebratory confetti!

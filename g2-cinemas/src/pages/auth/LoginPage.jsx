@@ -130,8 +130,8 @@ export const LoginPage = () => {
           </p>
         </div>
 
-        {/* 1-Click Role Accounts Selector Grid */}
-        <div className="space-y-2.5">
+        {/* 1-Click Role Accounts Selector Grid (Desktop/Tablet Only - Hidden on Mobile) */}
+        <div className="hidden sm:block space-y-2.5">
           <div className="flex items-center justify-between px-1">
             <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FFC914] flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
@@ -213,14 +213,16 @@ export const LoginPage = () => {
           </div>
         </div>
 
-        {/* Manual Login Card */}
+        {/* Manual Login Card (On mobile: Clean customer login only) */}
         <div className="max-w-md mx-auto w-full bg-[#141414] border border-[#292929] rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
           <div className="border-b border-[#242424] pb-3 text-center sm:text-left">
             <h2 className="text-base font-extrabold text-white">
-              Sign In with Custom Credentials
+              <span className="sm:hidden">Customer Sign In</span>
+              <span className="hidden sm:inline">Sign In with Custom Credentials</span>
             </h2>
-            <p className="text-xs text-[#777]">
-              Enter any customer, staff, or admin account details below.
+            <p className="text-xs text-[#777] mt-0.5">
+              <span className="sm:hidden">Enter your email and password to book tickets and order snacks.</span>
+              <span className="hidden sm:inline">Enter any customer, staff, or admin account details below.</span>
             </p>
           </div>
 
@@ -258,7 +260,7 @@ export const LoginPage = () => {
                 <button
                   type="button"
                   onClick={() =>
-                    toast("Demo: Select any of the 4 role cards above to auto-fill password.", {
+                    toast("Customer demo credentials: aarav@gmail.com / pass123", {
                       icon: "🔑"
                     })
                   }
@@ -314,7 +316,8 @@ export const LoginPage = () => {
                 </>
               ) : (
                 <>
-                  <span>Sign In to Portal</span>
+                  <span className="sm:hidden">Sign In</span>
+                  <span className="hidden sm:inline">Sign In to Portal</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

@@ -23,7 +23,7 @@ import { useAuth, ALL_DEMO_ACCOUNTS } from "../../context/AuthContext";
 export const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { selectedLocation, setSelectedLocation, settings, bookings, orders } = useApp();
+  const { selectedLocation, setSelectedLocation, settings, customerBookings, customerOrders } = useApp();
   const { isAuthenticated, user, isCustomer, isStaff, logout, switchPortal } = useAuth();
 
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -37,7 +37,7 @@ export const Navbar = () => {
 
   const availableCities = settings.cinema?.availableCities || ["Vadipatti"];
 
-  const totalActivityCount = (bookings?.length || 0) + (orders?.length || 0);
+  const totalActivityCount = (customerBookings?.length || 0) + (customerOrders?.length || 0);
 
   const navLinks = [
     { name: "Home", path: "/" },
