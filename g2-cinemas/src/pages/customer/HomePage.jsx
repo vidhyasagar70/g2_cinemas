@@ -67,177 +67,338 @@ export const HomePage = () => {
     <div className="space-y-16">
       {/* 5.1 Hero Section - Interactive Carousel of All Now Showing Movies */}
       {carouselMovies.length > 0 && activeMovie && (
-        <section
-          className="relative w-full overflow-hidden select-none bg-[#080808] flex items-end min-h-[500px] sm:min-h-[580px] md:min-h-[640px] lg:h-[75vh] max-h-[780px] xl:max-h-[820px]"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          {/* Active Movie Background Backdrop with Fade Effect */}
-          {/* Layer 1: Ambient Colored Blur (spreads across the entire widescreen container) */}
+        <>
+          {/* ======================================================== */}
+          {/* MOBILE HERO CAROUSEL (< md)                              */}
+          {/* Dedicated 16:9 Banner Card with Zero Cutting & Clear Text*/}
+          {/* ======================================================== */}
           <div
-            key={`ambient-${activeMovie.id}`}
-            className="absolute inset-0 bg-cover bg-center filter blur-3xl opacity-35 scale-110 pointer-events-none transition-all duration-1000"
-            style={{
-              backgroundImage: `url(${activeMovie.carousel || activeMovie.banner || activeMovie.poster})`
-            }}
-          />
-
-          {/* Layer 2: Main Crisp 16:9 Theatrical Landscape Banner */}
-          <div
-            key={`banner-${activeMovie.id}`}
-            className="absolute inset-0 flex justify-end items-center pointer-events-none animate-in fade-in duration-700"
+            className="md:hidden space-y-3 px-3 pt-3 select-none"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
           >
-            <img
-              src={activeMovie.carousel || activeMovie.banner || activeMovie.poster}
-              alt={activeMovie.title}
-              className="w-full h-full object-cover sm:object-contain object-right select-none transition-opacity duration-700 [mask-image:linear-gradient(to_right,transparent_0%,black_25%,black_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_25%,black_100%)]"
-            />
-          </div>
-
-          {/* Layer 3: Controlled Overlays for Mobile & Desktop */}
-          {/* Full-width vertical darkening on mobile to keep text completely readable */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-[#080808]/85 to-transparent sm:hidden pointer-events-none z-10" />
-
-          {/* Left-to-right gradient for desktop text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#080808] via-[#080808]/90 sm:via-[#080808]/75 to-transparent w-full md:w-3/5 lg:w-1/2 pointer-events-none z-10" />
-
-          {/* Soft bottom edge blend */}
-          <div className="absolute bottom-0 inset-x-0 h-20 sm:h-32 bg-gradient-to-t from-[#080808] via-[#080808]/60 to-transparent pointer-events-none z-10" />
-
-          {/* Soft top navbar blend */}
-          <div className="absolute top-0 inset-x-0 h-14 sm:h-16 bg-gradient-to-b from-[#080808]/70 to-transparent pointer-events-none z-10" />
-
-          {/* Previous / Next Arrow Controls */}
-          {carouselMovies.length > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={handlePrevSlide}
-                aria-label="Previous Slide"
-                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-13 sm:h-13 rounded-full bg-black/60 hover:bg-[#FFC914] text-white hover:text-black border border-white/20 hover:border-[#FFC914] backdrop-blur-md flex items-center justify-center transition-all shadow-2xl hover:scale-110 cursor-pointer group"
-              >
-                <ChevronLeft className="w-5 h-5 sm:w-7 sm:h-7 group-hover:-translate-x-0.5 transition-transform" />
-              </button>
-
-              <button
-                type="button"
-                onClick={handleNextSlide}
-                aria-label="Next Slide"
-                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-9 h-9 sm:w-13 sm:h-13 rounded-full bg-black/60 hover:bg-[#FFC914] text-white hover:text-black border border-white/20 hover:border-[#FFC914] backdrop-blur-md flex items-center justify-center transition-all shadow-2xl hover:scale-110 cursor-pointer group"
-              >
-                <ChevronRight className="w-5 h-5 sm:w-7 sm:h-7 group-hover:translate-x-0.5 transition-transform" />
-              </button>
-            </>
-          )}
-
-          {/* Hero Content Area */}
-          <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6 sm:pb-10 w-full">
-            <div className="flex flex-col lg:flex-row items-end justify-between gap-6">
-              {/* Left Column: Active Movie Highlight */}
+            {/* 16:9 Theatrical Banner Container - Uncropped & Crisp */}
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden bg-[#111] border border-[#262626] shadow-2xl">
+              {/* Ambient Glow */}
               <div
-                key={`content-${activeMovie.id}`}
-                className="max-w-2xl space-y-2.5 sm:space-y-3.5 animate-in fade-in slide-in-from-bottom-6 duration-700"
-              >
-                {/* Badge & Carousel Counter */}
-                <div className="flex items-center gap-2 max-w-full overflow-hidden">
-                  <div className="inline-flex items-center gap-1.5 sm:gap-2 bg-[#FFC914]/20 border border-[#FFC914]/50 px-2.5 sm:px-3.5 py-1 rounded-full text-[10px] sm:text-xs font-extrabold text-[#FFC914] shadow-lg shadow-[#FFC914]/15 shrink-0">
-                    <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                    <span>NOW SHOWING • VADIPATTI</span>
-                  </div>
-                  <span className="text-[10px] sm:text-[11px] font-mono text-[#888] bg-[#1a1a1a]/80 px-2 py-0.5 rounded border border-[#333] shrink-0">
-                    {String(currentSlideIndex + 1).padStart(2, "0")} / {String(carouselMovies.length).padStart(2, "0")}
-                  </span>
-                </div>
+                key={`m-ambient-${activeMovie.id}`}
+                className="absolute inset-0 bg-cover bg-center filter blur-2xl opacity-40 scale-110 pointer-events-none transition-all duration-700"
+                style={{
+                  backgroundImage: `url(${activeMovie.carousel || activeMovie.banner || activeMovie.poster})`
+                }}
+              />
 
-                {/* Title with Yellow Accent */}
-                <h1 className="text-2xl sm:text-4xl lg:text-6xl font-black text-white tracking-tight leading-tight sm:leading-none drop-shadow-md">
+              {/* 16:9 Banner Image - Full Widescreen with Zero Cutting */}
+              <img
+                key={`m-banner-${activeMovie.id}`}
+                src={activeMovie.carousel || activeMovie.banner || activeMovie.poster}
+                alt={activeMovie.title}
+                className="relative z-10 w-full h-full object-cover object-center select-none animate-in fade-in duration-500"
+              />
+
+              {/* Subtle top & bottom edge gradients */}
+              <div className="absolute inset-x-0 top-0 h-10 bg-gradient-to-b from-black/70 to-transparent z-20 pointer-events-none" />
+              <div className="absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-black/80 to-transparent z-20 pointer-events-none" />
+
+              {/* Top Badges */}
+              <div className="absolute top-2 inset-x-2.5 z-30 flex items-center justify-between pointer-events-none">
+                <div className="inline-flex items-center gap-1.5 bg-black/75 backdrop-blur-md border border-[#FFC914]/50 px-2.5 py-0.5 rounded-full text-[10px] font-extrabold text-[#FFC914] shadow-md">
+                  <Sparkles className="w-3 h-3 text-[#FFC914]" />
+                  <span>NOW SHOWING • VADIPATTI</span>
+                </div>
+                <span className="text-[10px] font-mono text-white bg-black/75 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/20">
+                  {String(currentSlideIndex + 1).padStart(2, "0")} / {String(carouselMovies.length).padStart(2, "0")}
+                </span>
+              </div>
+
+              {/* Prev / Next Slide Arrows on the Banner */}
+              {carouselMovies.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={handlePrevSlide}
+                    aria-label="Previous Slide"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-black/75 hover:bg-[#FFC914] text-white hover:text-black border border-white/20 backdrop-blur-md flex items-center justify-center transition-all shadow-xl active:scale-95 cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleNextSlide}
+                    aria-label="Next Slide"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 z-30 w-8 h-8 rounded-full bg-black/75 hover:bg-[#FFC914] text-white hover:text-black border border-white/20 backdrop-blur-md flex items-center justify-center transition-all shadow-xl active:scale-95 cursor-pointer"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </>
+              )}
+
+              {/* Slide Dots Inside Banner */}
+              <div className="absolute bottom-2 inset-x-0 z-30 flex items-center justify-center gap-1.5 pointer-events-none">
+                {carouselMovies.map((_, idx) => (
+                  <span
+                    key={idx}
+                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                      idx === currentSlideIndex
+                        ? "w-6 bg-[#FFC914] shadow-sm shadow-[#FFC914]"
+                        : "w-1.5 bg-white/40"
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile Movie Information & Action Controls */}
+            <div className="space-y-2 px-1">
+              <div className="flex items-start justify-between gap-2">
+                <h2 className="text-lg sm:text-xl font-black text-white leading-tight">
                   {activeMovie.title.split(":")[0]}
                   {activeMovie.title.includes(":") && (
-                    <span className="text-[#FFC914] block sm:inline">
+                    <span className="text-[#FFC914] block text-sm font-extrabold">
                       :{activeMovie.title.split(":")[1]}
                     </span>
                   )}
-                </h1>
-
-                {/* Tagline */}
-                {activeMovie.tagline && (
-                  <p className="text-xs sm:text-base text-[#FFC914] italic font-semibold line-clamp-1">
-                    "{activeMovie.tagline}"
-                  </p>
-                )}
-
-                {/* Metadata Row */}
-                <div className="flex flex-wrap items-center gap-1.5 sm:gap-3 text-[11px] sm:text-sm text-[#A1A1AA] pt-0.5">
-                  <span className="bg-[#1c1c1c] border border-[#383838] px-2 py-0.5 rounded text-white font-black text-[10px] sm:text-xs">
-                    {activeMovie.ageRating}
-                  </span>
-                  <span className="flex items-center gap-1 text-white bg-[#1a1a1a] px-2 py-0.5 rounded border border-[#333]">
-                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-[#FFC914] text-[#FFC914]" />
-                    <span className="font-extrabold">{activeMovie.rating}</span>
-                    <span className="text-[#777]">/10</span>
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FFC914]" />
-                    <span>{activeMovie.duration}</span>
-                  </span>
-                  <span>•</span>
-                  <span className="text-white font-medium">{activeMovie.genre?.join(", ")}</span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1">
-                    <Globe className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#FFC914]" />
-                    <span>{activeMovie.languages?.join(", ")}</span>
-                  </span>
-                </div>
-
-                {/* Description */}
-                <p className="text-xs sm:text-sm text-[#D4D4D8] line-clamp-2 max-w-xl leading-relaxed">
-                  {activeMovie.description}
-                </p>
-
-                {/* Director & Main Cast */}
-                <div className="text-[11px] sm:text-xs text-[#888] pt-0.5 truncate">
-                  <span className="text-[#666]">Starring: </span>
-                  <span className="text-[#ccc]">{activeMovie.cast?.slice(0, 3).join(", ")}</span>
-                  {activeMovie.director && (
-                    <>
-                      <span className="mx-2 text-[#444]">•</span>
-                      <span className="text-[#666]">Dir: </span>
-                      <span className="text-[#ccc]">{activeMovie.director}</span>
-                    </>
-                  )}
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3 pt-1.5 sm:pt-2">
-                  <button
-                    onClick={() => handleBookNow(activeMovie)}
-                    className="flex items-center gap-2 bg-[#FFC914] hover:bg-[#EAB308] text-black px-4 sm:px-7 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-black text-xs sm:text-sm shadow-xl shadow-[#FFC914]/25 hover:scale-105 transition-all cursor-pointer"
-                  >
-                    <Ticket className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-black" />
-                    <span>Book Tickets</span>
-                  </button>
-
-                  <a
-                    href={activeMovie.trailerUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-1.5 sm:gap-2 bg-[#171717]/85 hover:bg-[#252525] text-white border border-[#383838] px-3.5 sm:px-5 py-2.5 sm:py-3.5 rounded-xl sm:rounded-2xl font-bold text-xs sm:text-sm hover:scale-105 transition-all"
-                  >
-                    <Play className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-white text-white" />
-                    <span>Trailer</span>
-                  </a>
-
-                  <Link
-                    to={`/movie/${activeMovie.id}`}
-                    className="flex items-center gap-1 text-[11px] sm:text-xs text-[#A1A1AA] hover:text-[#FFC914] px-2.5 py-1.5 transition font-semibold"
-                  >
-                    <Info className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                    <span>Details</span>
-                  </Link>
-                </div>
+                </h2>
+                <span className="bg-[#1a1a1a] border border-[#333] px-2 py-0.5 rounded text-[#FFC914] font-black text-[10px] shrink-0">
+                  {activeMovie.ageRating}
+                </span>
               </div>
 
-              {/* Right Column: Sleek Mini Movie Previews on XL */}
+              {/* Metadata Row */}
+              <div className="flex flex-wrap items-center gap-2 text-xs text-[#A1A1AA]">
+                <span className="flex items-center gap-1 text-white bg-[#1a1a1a] px-2 py-0.5 rounded border border-[#333] font-bold text-[10px]">
+                  <Star className="w-3 h-3 fill-[#FFC914] text-[#FFC914]" />
+                  <span>{activeMovie.rating}</span>
+                  <span className="text-[#666]">/10</span>
+                </span>
+                <span className="flex items-center gap-1 text-[10px]">
+                  <Clock className="w-3 h-3 text-[#FFC914]" />
+                  <span>{activeMovie.duration}</span>
+                </span>
+                <span>•</span>
+                <span className="text-white text-[10px] font-medium">{activeMovie.genre?.slice(0, 2).join(", ")}</span>
+                <span>•</span>
+                <span className="text-[10px] text-[#ccc]">{activeMovie.languages?.[0]}</span>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2 pt-0.5">
+                <button
+                  onClick={() => handleBookNow(activeMovie)}
+                  className="flex-1 py-2 rounded-xl bg-[#FFC914] hover:bg-[#EAB308] text-black font-black text-xs transition shadow-md shadow-[#FFC914]/20 flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <Ticket className="w-3.5 h-3.5 fill-black" />
+                  <span>Book Tickets</span>
+                </button>
+
+                <a
+                  href={activeMovie.trailerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3.5 py-2 rounded-xl bg-[#171717] hover:bg-[#222] text-white border border-[#333] font-bold text-xs flex items-center gap-1.5"
+                >
+                  <Play className="w-3 h-3 fill-white text-white" />
+                  <span>Trailer</span>
+                </a>
+
+                <Link
+                  to={`/movie/${activeMovie.id}`}
+                  className="p-2 rounded-xl bg-[#171717] hover:bg-[#222] text-[#888] hover:text-[#FFC914] border border-[#333] flex items-center justify-center"
+                  title="View Details"
+                >
+                  <Info className="w-4 h-4" />
+                </Link>
+              </div>
+
+              {/* Quick Movie Switcher Pills on Mobile */}
+              <div className="flex items-center gap-1.5 overflow-x-auto pt-1 pb-1 scrollbar-none">
+                {carouselMovies.map((movie, idx) => {
+                  const isSelected = idx === currentSlideIndex;
+                  return (
+                    <button
+                      key={movie.id}
+                      onClick={() => setCurrentSlideIndex(idx)}
+                      className={`text-[10px] font-bold px-2.5 py-1 rounded-lg border transition-all cursor-pointer whitespace-nowrap ${
+                        isSelected
+                          ? "bg-[#FFC914] text-black border-[#FFC914] font-black"
+                          : "bg-[#141414] text-[#888] border-[#292929] hover:text-white"
+                      }`}
+                    >
+                      {movie.title.split(":")[0]}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* ======================================================== */}
+          {/* DESKTOP HERO CAROUSEL (>= md)                            */}
+          {/* Widescreen Cinematic Theatrical Showcase                 */}
+          {/* ======================================================== */}
+          <section
+            className="hidden md:flex relative w-full overflow-hidden select-none bg-[#080808] items-end md:min-h-[640px] lg:h-[75vh] max-h-[780px] xl:max-h-[820px]"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+          >
+            {/* Active Movie Background Backdrop with Fade Effect */}
+            {/* Layer 1: Ambient Colored Blur */}
+            <div
+              key={`ambient-${activeMovie.id}`}
+              className="absolute inset-0 bg-cover bg-center filter blur-3xl opacity-35 scale-110 pointer-events-none transition-all duration-1000"
+              style={{
+                backgroundImage: `url(${activeMovie.carousel || activeMovie.banner || activeMovie.poster})`
+              }}
+            />
+
+            {/* Layer 2: Main Crisp 16:9 Theatrical Landscape Banner */}
+            <div
+              key={`banner-${activeMovie.id}`}
+              className="absolute inset-0 flex justify-end items-center pointer-events-none animate-in fade-in duration-700"
+            >
+              <img
+                src={activeMovie.carousel || activeMovie.banner || activeMovie.poster}
+                alt={activeMovie.title}
+                className="w-full h-full object-cover object-right select-none transition-opacity duration-700 [mask-image:linear-gradient(to_right,transparent_0%,black_20%,black_100%)] [-webkit-mask-image:linear-gradient(to_right,transparent_0%,black_20%,black_100%)]"
+              />
+            </div>
+
+            {/* Layer 3: Controlled Overlays for Desktop */}
+            <div className="absolute inset-0 bg-gradient-to-r from-[#080808] via-[#080808]/85 to-transparent w-full md:w-3/5 lg:w-1/2 pointer-events-none z-10" />
+            <div className="absolute bottom-0 inset-x-0 h-32 bg-gradient-to-t from-[#080808] via-[#080808]/60 to-transparent pointer-events-none z-10" />
+            <div className="absolute top-0 inset-x-0 h-16 bg-gradient-to-b from-[#080808]/70 to-transparent pointer-events-none z-10" />
+
+            {/* Previous / Next Arrow Controls */}
+            {carouselMovies.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={handlePrevSlide}
+                  aria-label="Previous Slide"
+                  className="absolute left-6 top-1/2 -translate-y-1/2 z-30 w-13 h-13 rounded-full bg-black/60 hover:bg-[#FFC914] text-white hover:text-black border border-white/20 hover:border-[#FFC914] backdrop-blur-md flex items-center justify-center transition-all shadow-2xl hover:scale-110 cursor-pointer group"
+                >
+                  <ChevronLeft className="w-7 h-7 group-hover:-translate-x-0.5 transition-transform" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleNextSlide}
+                  aria-label="Next Slide"
+                  className="absolute right-6 top-1/2 -translate-y-1/2 z-30 w-13 h-13 rounded-full bg-black/60 hover:bg-[#FFC914] text-white hover:text-black border border-white/20 hover:border-[#FFC914] backdrop-blur-md flex items-center justify-center transition-all shadow-2xl hover:scale-110 cursor-pointer group"
+                >
+                  <ChevronRight className="w-7 h-7 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+              </>
+            )}
+
+            {/* Hero Content Area */}
+            <div className="relative z-20 max-w-7xl mx-auto px-6 lg:px-8 pb-10 w-full">
+              <div className="flex flex-col lg:flex-row items-end justify-between gap-6">
+                {/* Left Column: Active Movie Highlight */}
+                <div
+                  key={`content-${activeMovie.id}`}
+                  className="max-w-2xl space-y-3.5 animate-in fade-in slide-in-from-bottom-6 duration-700"
+                >
+                  {/* Badge & Carousel Counter */}
+                  <div className="flex items-center gap-2 max-w-full overflow-hidden">
+                    <div className="inline-flex items-center gap-2 bg-[#FFC914]/20 border border-[#FFC914]/50 px-3.5 py-1 rounded-full text-xs font-extrabold text-[#FFC914] shadow-lg shadow-[#FFC914]/15 shrink-0">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>NOW SHOWING • VADIPATTI</span>
+                    </div>
+                    <span className="text-[11px] font-mono text-[#888] bg-[#1a1a1a]/80 px-2 py-0.5 rounded border border-[#333] shrink-0">
+                      {String(currentSlideIndex + 1).padStart(2, "0")} / {String(carouselMovies.length).padStart(2, "0")}
+                    </span>
+                  </div>
+
+                  {/* Title with Yellow Accent */}
+                  <h1 className="text-4xl lg:text-6xl font-black text-white tracking-tight leading-none drop-shadow-md">
+                    {activeMovie.title.split(":")[0]}
+                    {activeMovie.title.includes(":") && (
+                      <span className="text-[#FFC914] inline">
+                        :{activeMovie.title.split(":")[1]}
+                      </span>
+                    )}
+                  </h1>
+
+                  {/* Tagline */}
+                  {activeMovie.tagline && (
+                    <p className="text-base text-[#FFC914] italic font-semibold line-clamp-1">
+                      "{activeMovie.tagline}"
+                    </p>
+                  )}
+
+                  {/* Metadata Row */}
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-[#A1A1AA] pt-0.5">
+                    <span className="bg-[#1c1c1c] border border-[#383838] px-2 py-0.5 rounded text-white font-black text-xs">
+                      {activeMovie.ageRating}
+                    </span>
+                    <span className="flex items-center gap-1 text-white bg-[#1a1a1a] px-2 py-0.5 rounded border border-[#333]">
+                      <Star className="w-4 h-4 fill-[#FFC914] text-[#FFC914]" />
+                      <span className="font-extrabold">{activeMovie.rating}</span>
+                      <span className="text-[#777]">/10</span>
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5 text-[#FFC914]" />
+                      <span>{activeMovie.duration}</span>
+                    </span>
+                    <span>•</span>
+                    <span className="text-white font-medium">{activeMovie.genre?.join(", ")}</span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1">
+                      <Globe className="w-3.5 h-3.5 text-[#FFC914]" />
+                      <span>{activeMovie.languages?.join(", ")}</span>
+                    </span>
+                  </div>
+
+                  {/* Description */}
+                  <p className="text-sm text-[#D4D4D8] line-clamp-2 max-w-xl leading-relaxed">
+                    {activeMovie.description}
+                  </p>
+
+                  {/* Director & Main Cast */}
+                  <div className="text-xs text-[#888] pt-0.5 truncate">
+                    <span className="text-[#666]">Starring: </span>
+                    <span className="text-[#ccc]">{activeMovie.cast?.slice(0, 3).join(", ")}</span>
+                    {activeMovie.director && (
+                      <>
+                        <span className="mx-2 text-[#444]">•</span>
+                        <span className="text-[#666]">Dir: </span>
+                        <span className="text-[#ccc]">{activeMovie.director}</span>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex flex-wrap items-center gap-3 pt-2">
+                    <button
+                      onClick={() => handleBookNow(activeMovie)}
+                      className="flex items-center gap-2 bg-[#FFC914] hover:bg-[#EAB308] text-black px-7 py-3.5 rounded-2xl font-black text-sm shadow-xl shadow-[#FFC914]/25 hover:scale-105 transition-all cursor-pointer"
+                    >
+                      <Ticket className="w-4 h-4 fill-black" />
+                      <span>Book Tickets</span>
+                    </button>
+
+                    <a
+                      href={activeMovie.trailerUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="flex items-center gap-2 bg-[#171717]/85 hover:bg-[#252525] text-white border border-[#383838] px-5 py-3.5 rounded-2xl font-bold text-sm hover:scale-105 transition-all"
+                    >
+                      <Play className="w-4 h-4 fill-white text-white" />
+                      <span>Trailer</span>
+                    </a>
+
+                    <Link
+                      to={`/movie/${activeMovie.id}`}
+                      className="flex items-center gap-1 text-xs text-[#A1A1AA] hover:text-[#FFC914] px-2.5 py-1.5 transition font-semibold"
+                    >
+                      <Info className="w-4 h-4" />
+                      <span>Details</span>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Right Column: Sleek Mini Movie Previews on XL */}
               <div className="hidden xl:flex flex-col gap-2 w-72 shrink-0 bg-black/40 hover:bg-black/60 backdrop-blur-md p-3 rounded-2xl border border-white/10 shadow-2xl transition-all">
                 <div className="flex items-center justify-between px-1">
                   <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#FFC914] flex items-center gap-1.5">
@@ -348,6 +509,7 @@ export const HomePage = () => {
             </div>
           </div>
         </section>
+        </>
       )}
 
       {/* Main Content Sections */}
