@@ -70,7 +70,7 @@ export const MoviesPage = () => {
             Movies at <span className="text-[#FFC914]">G2 Cinemas</span>
           </h1>
           <p className="text-xs text-[#A1A1AA] mt-1">
-            Experience the greatest blockbusters in IMAX Laser, Dolby Atmos, and 3D.
+            Experience the greatest blockbusters in Dolby Atmos, 4K Laser, and 3D.
           </p>
         </div>
 

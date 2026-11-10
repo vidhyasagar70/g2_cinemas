@@ -4,7 +4,7 @@ import { INITIAL_SHOWS } from "../data/shows";
 const MOVIES_KEY = "g2_cinemas_movies";
 const SHOWS_KEY = "g2_cinemas_shows";
 const CATALOG_VERSION_KEY = "g2_cinemas_catalogue_version";
-const CURRENT_CATALOG_VERSION = "v6_carousel_banner_fixed";
+const CURRENT_CATALOG_VERSION = "v7_two_dolby_atmos_screens";
 
 // Check and perform seed migration if old version exists
 const checkCatalogueVersion = () => {
@@ -14,6 +14,8 @@ const checkCatalogueVersion = () => {
       // Overwrite active movie catalogue and show schedules with new releases
       localStorage.setItem(MOVIES_KEY, JSON.stringify(INITIAL_MOVIES));
       localStorage.setItem(SHOWS_KEY, JSON.stringify(INITIAL_SHOWS));
+      localStorage.removeItem("g2_cinemas_bookings");
+      localStorage.removeItem("g2_cinemas_orders");
       localStorage.setItem(CATALOG_VERSION_KEY, CURRENT_CATALOG_VERSION);
     }
   } catch (e) {

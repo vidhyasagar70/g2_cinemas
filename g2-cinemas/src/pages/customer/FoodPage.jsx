@@ -28,15 +28,15 @@ import toast from "react-hot-toast";
 const AUDITORIUM_SCREENS = [
   {
     id: "Screen 1",
-    name: "Screen 1 - IMAX Laser",
-    format: "4K Laser • Dolby 7.1 Atmos",
-    tag: "IMAX Auditorium"
+    name: "Screen 1 - Dolby Atmos",
+    format: "4K Laser • 64-Channel Dolby Atmos",
+    tag: "Dolby Atmos Auditorium"
   },
   {
     id: "Screen 2",
     name: "Screen 2 - Dolby Atmos",
-    format: "Dual 4K • 64-Channel Atmos",
-    tag: "Dolby Auditorium"
+    format: "Dual 4K • 64-Channel Dolby Atmos",
+    tag: "Dolby Atmos Auditorium"
   }
 ];
 

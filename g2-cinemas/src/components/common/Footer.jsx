@@ -29,7 +29,7 @@ export const Footer = () => {
               </div>
             </div>
             <p className="text-xs text-[#888] leading-relaxed">
-              Experience the unmatched thrill of IMAX Laser and Dolby Atmos sound with luxury recliner seating and gourmet cinema dining.
+              Experience the unmatched thrill of Dolby Atmos 64-channel spatial sound and 4K Laser projection with luxury recliner seating and gourmet cinema dining.
             </p>
             <div className="flex items-center gap-3 text-xs text-[#FFC914]">
               <Award className="w-4 h-4" />

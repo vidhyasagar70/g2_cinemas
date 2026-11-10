@@ -126,7 +126,7 @@ export const reportService = {
   getScreenOccupancy: () => {
     return [
       {
-        screen: "Screen 1 - IMAX Laser",
+        screen: "Screen 1 - Dolby Atmos",
         totalSeats: 84,
         soldSeats: 58,
         blockedSeats: 2,
@@ -142,15 +142,6 @@ export const reportService = {
         availableSeats: 41,
         occupancyRate: 50,
         nextShow: "SCENE (07:15 PM)"
-      },
-      {
-        screen: "Screen 3 - Gold Lounge",
-        totalSeats: 60,
-        soldSeats: 38,
-        blockedSeats: 0,
-        availableSeats: 22,
-        occupancyRate: 63,
-        nextShow: "Ramayana: Rise of a Legend – Part 1 (06:00 PM)"
       }
     ];
   }

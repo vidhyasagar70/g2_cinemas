@@ -660,7 +660,7 @@ export const HomePage = () => {
             <div className="w-10 h-10 rounded-xl bg-[#FFC914]/15 flex items-center justify-center text-[#FFC914]">
               <Film className="w-5 h-5" />
             </div>
-            <h3 className="font-extrabold text-base text-white">IMAX 4K Laser Projection</h3>
+            <h3 className="font-extrabold text-base text-white">4K Laser Theatrical Projection</h3>
             <p className="text-xs text-[#888] leading-relaxed">
               Crystal-clear images and next-generation dual-laser projection paired with customized stadium seating for maximum immersion.
             </p>

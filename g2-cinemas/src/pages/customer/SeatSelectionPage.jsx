@@ -73,7 +73,7 @@ export const SeatSelectionPage = () => {
               <h1 className="text-lg font-black text-white flex items-center gap-2">
                 <span>{activeMovie.title}</span>
                 <span className="text-xs bg-[#FFC914] text-black font-extrabold px-2 py-0.5 rounded">
-                  {activeShow?.format || "IMAX 2D"}
+                  {activeShow?.format || "Dolby Atmos 2D"}
                 </span>
               </h1>
               <div className="flex items-center gap-3 text-xs text-[#888] mt-0.5">

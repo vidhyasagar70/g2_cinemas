@@ -5,7 +5,7 @@ export const INITIAL_ORDERS = [
     customerName: "Aarav Kumar",
     customerMobile: "+91 98765 43210",
     orderType: "SEAT_DELIVERY", // "SEAT_DELIVERY" | "COUNTER_PICKUP"
-    screen: "Screen 1 - IMAX Laser",
+    screen: "Screen 1 - Dolby Atmos",
     seats: "D5, D6",
     status: "NEW", // "NEW" | "PREPARING" | "READY" | "DELIVERED" | "COLLECTED"
     items: [
@@ -41,7 +41,7 @@ export const INITIAL_ORDERS = [
     customerName: "Vikram Malhotra",
     customerMobile: "+91 99200 88776",
     orderType: "SEAT_DELIVERY",
-    screen: "Screen 3 - Gold Lounge",
+    screen: "Screen 1 - Dolby Atmos",
     seats: "D2, D3",
     status: "READY",
     items: [
@@ -58,7 +58,7 @@ export const INITIAL_ORDERS = [
     customerName: "Neha Patel",
     customerMobile: "+91 98223 99881",
     orderType: "COUNTER_PICKUP",
-    screen: "Screen 1 - IMAX Laser",
+    screen: "Screen 1 - Dolby Atmos",
     seats: "C4, C5",
     status: "COLLECTED",
     items: [
@@ -89,4 +89,3 @@ export const INITIAL_ORDERS = [
     createdAt: new Date(Date.now() - 110 * 60 * 1000).toISOString()
   }
 ];
-

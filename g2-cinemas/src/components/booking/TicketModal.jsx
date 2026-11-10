@@ -74,7 +74,7 @@ export const TicketModal = ({ booking, onClose }) => {
                 {booking.movieTitle}
               </h2>
               <p className="text-xs text-[#FFC914] font-medium">
-                {booking.format || "IMAX Laser 2D"}
+                {booking.format || "Dolby Atmos 2D"}
               </p>
               <div className="flex items-center gap-2 text-xs text-[#888]">
                 <span className="flex items-center gap-1">

@@ -317,7 +317,7 @@ export const CheckoutPage = () => {
                     {selectedMovie?.title || "Movie Title"}
                   </h4>
                   <div className="text-[11px] text-[#FFC914] font-medium">
-                    {selectedShow?.format || "IMAX Laser 2D"}
+                    {selectedShow?.format || "Dolby Atmos 2D"}
                   </div>
                   <div className="text-[11px] text-[#888]">
                     {selectedShow?.screenName || "Screen 1"}

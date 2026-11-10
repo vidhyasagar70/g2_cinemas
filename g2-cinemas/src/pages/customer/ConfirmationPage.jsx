@@ -95,7 +95,7 @@ export const ConfirmationPage = () => {
                   {booking?.movieTitle}
                 </h2>
                 <p className="text-xs text-[#888]">
-                  {booking?.format || "IMAX Laser 2D"} • English with English Subtitles
+                  {booking?.format || "Dolby Atmos 2D"} • Tamil with English Subtitles
                 </p>
                 <div className="text-xs text-[#FFC914] font-semibold pt-1">
                   {booking?.screenName}
