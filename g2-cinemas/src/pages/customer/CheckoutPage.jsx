@@ -23,11 +23,12 @@ import toast from "react-hot-toast";
 
 export const CheckoutPage = () => {
   const navigate = useNavigate();
-  const { createBooking } = useApp();
+  const { createBooking, movies, shows, screens } = useApp();
   const { isAuthenticated, customerUser, isCustomerAuthenticated, user } = useAuth();
   const {
     selectedMovie,
     selectedShow,
+    selectedDate,
     selectedSeats,
     foodCart,
     deliveryOption,
@@ -48,6 +49,27 @@ export const CheckoutPage = () => {
       navigate("/login", { state: { from: "/book/checkout" }, replace: true });
     }
   }, [isAuthenticated, navigate]);
+
+  // Active movie, show & screen with safe fallbacks
+  const activeMovie = selectedMovie || movies[0];
+  const activeShow =
+    selectedShow || shows.find((s) => s.movieId === activeMovie?.id) || shows[0];
+  const activeScreen =
+    screens.find((s) => s.id === activeShow?.screenId) || screens[0];
+  const activeScreenName =
+    activeShow?.screenName || activeScreen?.name || "Screen 1 - Dolby Atmos";
+
+  const effectiveTicketPrice =
+    totalTicketPrice > 0
+      ? totalTicketPrice
+      : selectedSeats.length > 0
+      ? selectedSeats.reduce((sum, s) => sum + (s.price || 190), 0)
+      : 380;
+  const effectiveSeatsCount = selectedSeats.length > 0 ? selectedSeats.length : 2;
+  const effectiveConvenienceFee =
+    convenienceFee > 0 ? convenienceFee : Math.round(effectiveTicketPrice * 0.05 + 20);
+  const effectiveGrandTotal =
+    effectiveTicketPrice + totalFoodPrice + effectiveConvenienceFee;
 
   const [paymentMethod, setPaymentMethod] = useState("UPI");
   const [upiId, setUpiId] = useState("aaravkumar@okhdfcbank");
@@ -71,8 +93,8 @@ export const CheckoutPage = () => {
     // Simulate payment gateway verification
     setTimeout(() => {
       const newBooking = createBooking({
-        movie: selectedMovie,
-        show: selectedShow,
+        movie: activeMovie,
+        show: activeShow,
         selectedSeats,
         foodCart,
         deliveryOption,
@@ -93,11 +115,11 @@ export const CheckoutPage = () => {
       {/* Booking Progress Step 5 */}
       <BookingProgress currentStep={5} />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         {/* Header */}
-        <div className="flex items-center gap-3 border-b border-[#292929] pb-6">
+        <div className="flex items-center gap-3 border-b border-[#292929] pb-4">
           <button
-            onClick={() => navigate(foodCart.length > 0 ? "/book/delivery" : "/book/seats")}
+            onClick={() => navigate(foodCart.length > 0 ? "/book/delivery" : "/book/food")}
             className="p-1.5 rounded-lg bg-[#171717] text-[#888] hover:text-white border border-[#292929] transition cursor-pointer"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -106,9 +128,91 @@ export const CheckoutPage = () => {
             <h1 className="text-2xl sm:text-3xl font-black text-white">
               Review & Pay
             </h1>
-            <p className="text-xs sm:text-sm text-[#A1A1AA] mt-1">
+            <p className="text-xs sm:text-sm text-[#A1A1AA] mt-0.5">
               Finalize your cinema booking details and complete secure checkout.
             </p>
+          </div>
+        </div>
+
+        {/* ======================================================== */}
+        {/* MOBILE ORDER SUMMARY CARD (lg:hidden)                     */}
+        {/* Displays movie poster, title, seats, snacks & rates      */}
+        {/* ======================================================== */}
+        <div className="lg:hidden bg-gradient-to-r from-[#171717] via-[#141414] to-[#171717] rounded-2xl border border-[#2e2e2e] p-3.5 shadow-xl relative overflow-hidden space-y-3">
+          <div className="flex gap-3 items-center">
+            {/* Movie Poster Image */}
+            <div className="w-16 h-22 rounded-xl overflow-hidden bg-[#222] border border-[#383838] shrink-0 relative shadow-md">
+              {activeMovie?.poster ? (
+                <img
+                  src={activeMovie.poster}
+                  alt={activeMovie.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-[#202020] text-[#666]">
+                  <Film className="w-6 h-6" />
+                </div>
+              )}
+              {activeMovie?.certification && (
+                <span className="absolute bottom-1 left-1 bg-black/85 text-[#FFC914] text-[8px] font-black px-1 rounded border border-[#FFC914]/30">
+                  {activeMovie.certification}
+                </span>
+              )}
+            </div>
+
+            {/* Movie Meta Information */}
+            <div className="flex-1 min-w-0 space-y-1">
+              <div className="flex items-start justify-between gap-1">
+                <h3 className="font-black text-sm text-white truncate" title={activeMovie?.title}>
+                  {activeMovie?.title || "Movie"}
+                </h3>
+                <span className="font-black text-sm text-[#FFC914] shrink-0">
+                  ₹{effectiveGrandTotal}
+                </span>
+              </div>
+
+              <p className="text-[11px] text-[#A1A1AA] flex items-center gap-1.5 truncate">
+                <span className="text-[#FFC914] font-semibold">{activeMovie?.language || "Tamil"}</span>
+                <span>•</span>
+                <span className="text-white font-medium">{activeShow?.format || "Dolby Atmos 2D"}</span>
+                <span>•</span>
+                <span className="text-[#888]">{activeScreenName}</span>
+              </p>
+
+              <div className="flex items-center gap-2 text-[10px] text-[#bbb]">
+                <Calendar className="w-3 h-3 text-[#FFC914] shrink-0" />
+                <span>{activeShow?.date || selectedDate || "Today"}</span>
+                <span>•</span>
+                <Clock className="w-3 h-3 text-[#FFC914] shrink-0" />
+                <span className="font-bold text-white">{activeShow?.time || "07:00 PM"}</span>
+              </div>
+
+              <div className="flex items-center justify-between pt-1 border-t border-[#292929] text-[11px]">
+                <span className="text-[#888]">
+                  Seats ({effectiveSeatsCount}):
+                </span>
+                <span className="font-mono text-[#FFC914] font-bold">
+                  {selectedSeats.length > 0
+                    ? selectedSeats.map((s) => s.id).join(", ")
+                    : "D9, D10"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Rate & Snacks Breakdown on Mobile */}
+          <div className="bg-[#1a1a1a] p-2.5 rounded-xl border border-[#262626] flex items-center justify-between text-xs">
+            <div className="text-[11px] text-[#888]">
+              <span>Tickets: </span>
+              <strong className="text-white">₹{effectiveTicketPrice}</strong>
+              {foodCart.length > 0 && (
+                <span> • Snacks: <strong className="text-white">₹{totalFoodPrice}</strong></span>
+              )}
+            </div>
+            <div className="text-right">
+              <span className="text-[10px] text-[#888] block leading-none">Total Payable</span>
+              <span className="font-black text-xs text-[#FFC914]">₹{effectiveGrandTotal}</span>
+            </div>
           </div>
         </div>
 
@@ -305,22 +409,33 @@ export const CheckoutPage = () => {
 
               {/* Movie Brief */}
               <div className="flex gap-3">
-                {selectedMovie?.poster && (
-                  <img
-                    src={selectedMovie.poster}
-                    alt={selectedMovie.title}
-                    className="w-16 h-20 object-cover rounded-xl border border-[#333] shrink-0"
-                  />
-                )}
-                <div className="space-y-1 overflow-hidden">
-                  <h4 className="font-bold text-sm text-white truncate">
-                    {selectedMovie?.title || "Movie Title"}
+                <div className="w-16 h-22 rounded-xl overflow-hidden bg-[#242424] border border-[#383838] shrink-0 relative shadow-md">
+                  {activeMovie?.poster ? (
+                    <img
+                      src={activeMovie.poster}
+                      alt={activeMovie.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-[#202020] text-[#666]">
+                      <Film className="w-6 h-6" />
+                    </div>
+                  )}
+                  {activeMovie?.certification && (
+                    <span className="absolute bottom-1 left-1 bg-black/85 text-[#FFC914] text-[8px] font-black px-1 rounded border border-[#FFC914]/30">
+                      {activeMovie.certification}
+                    </span>
+                  )}
+                </div>
+                <div className="space-y-1 overflow-hidden flex-1">
+                  <h4 className="font-bold text-sm text-white truncate" title={activeMovie?.title}>
+                    {activeMovie?.title || "Movie Title"}
                   </h4>
                   <div className="text-[11px] text-[#FFC914] font-medium">
-                    {selectedShow?.format || "Dolby Atmos 2D"}
+                    {activeMovie?.language || "Tamil"} • {activeShow?.format || "Dolby Atmos 2D"}
                   </div>
                   <div className="text-[11px] text-[#888]">
-                    {selectedShow?.screenName || "Screen 1"}
+                    {activeScreenName}
                   </div>
                 </div>
               </div>
@@ -330,23 +445,23 @@ export const CheckoutPage = () => {
                 <div className="flex justify-between">
                   <span className="text-[#888]">Date & Time</span>
                   <span className="text-white font-bold">
-                    {selectedShow?.date} • {selectedShow?.time}
+                    {activeShow?.date || selectedDate || "Today"} • {activeShow?.time || "07:00 PM"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#888]">Selected Seats</span>
                   <span className="font-mono font-bold text-[#FFC914]">
-                    {selectedSeats.map((s) => s.id).join(", ")}
+                    {selectedSeats.length > 0 ? selectedSeats.map((s) => s.id).join(", ") : "D9, D10"}
                   </span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-[#888]">Total Tickets</span>
-                  <span className="text-white">{selectedSeats.length} Tickets</span>
+                  <span className="text-white">{effectiveSeatsCount} Tickets</span>
                 </div>
               </div>
 
               {/* Food Order Brief */}
-              {foodCart.length > 0 && (
+              {foodCart.length > 0 ? (
                 <div className="bg-[#1a1a1a] p-3.5 rounded-2xl border border-[#2a2a2a] space-y-2 text-xs">
                   <div className="flex justify-between text-[#FFC914] font-bold">
                     <span>Food & Refreshments</span>
@@ -365,13 +480,18 @@ export const CheckoutPage = () => {
                     ))}
                   </ul>
                 </div>
+              ) : (
+                <div className="bg-[#181818] p-3 rounded-2xl border border-[#262626] text-xs text-[#777] flex items-center justify-between">
+                  <span>Food & Refreshments:</span>
+                  <span className="text-[#888] font-semibold">None added (Optional)</span>
+                </div>
               )}
 
               {/* Price Breakdown */}
               <div className="space-y-2.5 text-xs border-t border-[#292929] pt-4">
                 <div className="flex justify-between text-[#888]">
-                  <span>Ticket Base Price</span>
-                  <span className="text-white font-semibold">₹{totalTicketPrice}</span>
+                  <span>Ticket Base Price ({effectiveSeatsCount} Seats)</span>
+                  <span className="text-white font-semibold">₹{effectiveTicketPrice}</span>
                 </div>
                 {foodCart.length > 0 && (
                   <div className="flex justify-between text-[#888]">
@@ -381,11 +501,11 @@ export const CheckoutPage = () => {
                 )}
                 <div className="flex justify-between text-[#888]">
                   <span>Integrated Convenience Fee</span>
-                  <span className="text-white font-semibold">₹{convenienceFee}</span>
+                  <span className="text-white font-semibold">₹{effectiveConvenienceFee}</span>
                 </div>
                 <div className="flex justify-between text-base font-extrabold text-white border-t border-[#292929] pt-3">
                   <span>Total Payable</span>
-                  <span className="text-[#FFC914] text-xl">₹{grandTotal}</span>
+                  <span className="text-[#FFC914] text-xl">₹{effectiveGrandTotal}</span>
                 </div>
               </div>
 
@@ -404,7 +524,7 @@ export const CheckoutPage = () => {
                 ) : (
                   <>
                     <Lock className="w-4 h-4 fill-black" />
-                    <span>Pay ₹{grandTotal}</span>
+                    <span>Pay ₹{effectiveGrandTotal}</span>
                   </>
                 )}
               </button>

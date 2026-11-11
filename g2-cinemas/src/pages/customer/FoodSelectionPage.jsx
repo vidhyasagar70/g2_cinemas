@@ -9,7 +9,14 @@ import {
   Sparkles,
   ShoppingBag,
   ArrowLeft,
-  Check
+  Check,
+  Film,
+  Calendar,
+  Clock,
+  Ticket,
+  ChevronUp,
+  ChevronDown,
+  X
 } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 import { useBooking } from "../../context/BookingContext";
@@ -20,7 +27,7 @@ import toast from "react-hot-toast";
 
 export const FoodSelectionPage = () => {
   const navigate = useNavigate();
-  const { products } = useApp();
+  const { products, movies, shows, screens } = useApp();
   const { isAuthenticated } = useAuth();
   const {
     foodCart,
@@ -29,7 +36,11 @@ export const FoodSelectionPage = () => {
     removeFromCart,
     clearCart,
     totalFoodPrice,
-    selectedSeats
+    selectedSeats,
+    selectedMovie,
+    selectedShow,
+    selectedDate,
+    totalTicketPrice
   } = useBooking();
 
   // Authentication guard
@@ -42,6 +53,26 @@ export const FoodSelectionPage = () => {
 
   const [activeCategory, setActiveCategory] = useState("All");
   const [filterVegOnly, setFilterVegOnly] = useState(false);
+  const [showMobileSummaryModal, setShowMobileSummaryModal] = useState(false);
+
+  // Active movie and show resolution with safe fallbacks
+  const activeMovie = selectedMovie || movies[0];
+  const activeShow =
+    selectedShow || shows.find((s) => s.movieId === activeMovie?.id) || shows[0];
+  const activeScreen =
+    screens.find((s) => s.id === activeShow?.screenId) || screens[0];
+  const activeScreenName =
+    activeShow?.screenName || activeScreen?.name || "Screen 1 - Dolby Atmos";
+
+  // Effective ticket price and seats calculation
+  const effectiveTicketPrice =
+    totalTicketPrice > 0
+      ? totalTicketPrice
+      : selectedSeats.length > 0
+      ? selectedSeats.reduce((sum, s) => sum + (s.price || 190), 0)
+      : 380;
+  const effectiveSeatsCount = selectedSeats.length > 0 ? selectedSeats.length : 2;
+  const effectiveGrandTotal = effectiveTicketPrice + totalFoodPrice;
 
   const totalItems = useMemo(() => {
     return foodCart.reduce((sum, item) => sum + item.quantity, 0);
@@ -95,7 +126,7 @@ export const FoodSelectionPage = () => {
       <BookingProgress currentStep={3} />
 
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-4 sm:space-y-6">
-        {/* Top Navigation & Seat Context */}
+        {/* Top Navigation & Context */}
         <div className="flex items-center justify-between text-xs pt-1">
           <button
             type="button"
@@ -106,10 +137,87 @@ export const FoodSelectionPage = () => {
             <span>Back to Seat Selection</span>
           </button>
           <div className="flex items-center gap-2">
-            <span className="text-[#666] hidden sm:inline">Seats:</span>
+            <span className="text-[#666] hidden sm:inline">Selected Seats:</span>
             <span className="font-mono text-[#FFC914] font-bold bg-[#141414] border border-[#292929] px-2 py-0.5 rounded">
-              {selectedSeats.map((s) => s.id).join(", ") || "None"}
+              {selectedSeats.length > 0
+                ? selectedSeats.map((s) => s.id).join(", ")
+                : "D9, D10"}
             </span>
+          </div>
+        </div>
+
+        {/* ======================================================== */}
+        {/* MOBILE MOVIE TICKET CART CARD (lg:hidden)                 */}
+        {/* Shows movie poster, title, screen, seats & ticket rate   */}
+        {/* ======================================================== */}
+        <div className="lg:hidden bg-gradient-to-r from-[#171717] via-[#141414] to-[#171717] rounded-2xl border border-[#2e2e2e] p-3.5 shadow-xl relative overflow-hidden">
+          <div className="flex gap-3 items-center">
+            {/* Movie Poster Image Thumbnail */}
+            <div className="w-16 h-22 rounded-xl overflow-hidden bg-[#222] border border-[#383838] shrink-0 relative shadow-md">
+              {activeMovie?.poster ? (
+                <img
+                  src={activeMovie.poster}
+                  alt={activeMovie.title}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-[#202020] text-[#666]">
+                  <Film className="w-6 h-6" />
+                </div>
+              )}
+              {activeMovie?.certification && (
+                <span className="absolute bottom-1 left-1 bg-black/85 text-[#FFC914] text-[8px] font-black px-1 py-0.2 rounded border border-[#FFC914]/30">
+                  {activeMovie.certification}
+                </span>
+              )}
+            </div>
+
+            {/* Movie Info & Ticket Rate */}
+            <div className="flex-1 min-w-0 space-y-1">
+              <div className="flex items-start justify-between gap-1.5">
+                <div className="min-w-0 flex-1">
+                  <span className="text-[10px] uppercase font-bold text-[#FFC914] tracking-wider block">
+                    MOVIE IN CART
+                  </span>
+                  <h3 className="font-black text-sm text-white truncate" title={activeMovie?.title}>
+                    {activeMovie?.title || "Movie"}
+                  </h3>
+                </div>
+                <div className="text-right shrink-0">
+                  <span className="text-[10px] text-[#888] block">Ticket Rate</span>
+                  <span className="font-black text-sm text-[#FFC914] block">
+                    ₹{effectiveTicketPrice}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-[#A1A1AA] flex items-center gap-1.5 truncate">
+                <span className="text-[#FFC914] font-semibold">{activeMovie?.language || "Tamil"}</span>
+                <span>•</span>
+                <span className="text-white font-medium">{activeShow?.format || "Dolby Atmos 2D"}</span>
+                <span>•</span>
+                <span className="text-[#888]">{activeScreenName}</span>
+              </p>
+
+              <div className="flex items-center gap-2 text-[10px] text-[#bbb]">
+                <Calendar className="w-3 h-3 text-[#FFC914] shrink-0" />
+                <span>{activeShow?.date || selectedDate || "Today"}</span>
+                <span>•</span>
+                <Clock className="w-3 h-3 text-[#FFC914] shrink-0" />
+                <span className="font-bold text-white">{activeShow?.time || "07:00 PM"}</span>
+              </div>
+
+              <div className="flex items-center justify-between pt-1 border-t border-[#292929] text-[11px]">
+                <span className="text-[#888]">
+                  Seats ({effectiveSeatsCount}):
+                </span>
+                <span className="font-mono text-[#FFC914] font-bold">
+                  {selectedSeats.length > 0
+                    ? selectedSeats.map((s) => s.id).join(", ")
+                    : "D9, D10"}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -308,100 +416,199 @@ export const FoodSelectionPage = () => {
             </div>
           </div>
 
-          {/* Right Column: Desktop Shopping Cart (hidden on mobile, uses sticky bottom bar instead) */}
+          {/* ======================================================== */}
+          {/* DESKTOP SHOPPING BASKET & MOVIE SUMMARY (lg:col-span-1)   */}
+          {/* ======================================================== */}
           <div className="hidden lg:block lg:col-span-1">
-            <div className="bg-[#141414] rounded-2xl border border-[#292929] p-5 space-y-4 sticky top-24 shadow-xl">
+            <div className="bg-[#141414] rounded-2xl border border-[#292929] p-5 space-y-4 sticky top-24 shadow-2xl">
+              {/* Header */}
               <div className="flex items-center justify-between border-b border-[#292929] pb-3">
                 <div className="flex items-center gap-2">
-                  <ShoppingBag className="w-4 h-4 text-[#FFC914]" />
-                  <h3 className="font-bold text-sm text-white">Your Food Basket</h3>
+                  <Film className="w-4 h-4 text-[#FFC914]" />
+                  <h3 className="font-extrabold text-sm text-white tracking-wide">
+                    Your Booking Summary
+                  </h3>
                 </div>
-                <span className="text-xs bg-[#222] px-2 py-0.5 rounded text-[#888] font-mono">
-                  {totalItems} items
+                <span className="text-[11px] bg-[#1f1a08] border border-[#FFC914]/30 text-[#FFC914] px-2.5 py-0.5 rounded-full font-bold">
+                  Step 3 of 5
                 </span>
               </div>
 
-              {foodCart.length === 0 ? (
-                <div className="py-8 text-center text-xs text-[#666] space-y-2">
-                  <UtensilsCrossed className="w-8 h-8 text-[#333] mx-auto mb-1" />
-                  <p>Your basket is empty.</p>
-                  <p className="text-[11px] text-[#555]">
-                    Select hot popcorn, drinks, and combos on the left.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
-                  {foodCart.map((item) => (
-                    <div
-                      key={item.id}
-                      className="flex items-center justify-between text-xs bg-[#1a1a1a] p-2.5 rounded-xl border border-[#2a2a2a]"
-                    >
-                      <div className="space-y-0.5 flex-1 pr-2">
-                        <div className="font-bold text-white truncate">{item.name}</div>
-                        <div className="text-[10px] text-[#888]">
-                          ₹{item.price} x {item.quantity} = ₹{item.price * item.quantity}
-                        </div>
+              {/* 1. MOVIE TICKET CART DETAILS */}
+              <div className="bg-[#181818] rounded-xl p-3 border border-[#2c2c2c] space-y-3 relative overflow-hidden group">
+                <div className="flex gap-3">
+                  {/* Movie Poster Image Thumbnail */}
+                  <div className="w-16 h-22 rounded-lg overflow-hidden bg-[#242424] border border-[#383838] shrink-0 relative shadow-md">
+                    {activeMovie?.poster ? (
+                      <img
+                        src={activeMovie.poster}
+                        alt={activeMovie.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-[#202020] text-[#666]">
+                        <Film className="w-6 h-6" />
                       </div>
+                    )}
+                    {activeMovie?.certification && (
+                      <span className="absolute bottom-1 left-1 bg-black/85 backdrop-blur-xs text-[#FFC914] text-[8px] font-black px-1 rounded border border-[#FFC914]/30">
+                        {activeMovie.certification}
+                      </span>
+                    )}
+                  </div>
 
-                      <div className="flex items-center gap-2">
-                        <div className="flex items-center bg-[#252525] rounded-lg border border-[#3a3a3a] px-1.5 py-0.5">
-                          <button
-                            type="button"
-                            onClick={() => updateCartQty(item.id, -1)}
-                            className="text-[#aaa] hover:text-white cursor-pointer"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="w-5 text-center font-bold text-white text-[11px]">
-                            {item.quantity}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => updateCartQty(item.id, 1)}
-                            className="text-[#FFC914] hover:text-white cursor-pointer"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
-                        </div>
-
-                        <button
-                          type="button"
-                          onClick={() => removeFromCart(item.id)}
-                          className="text-[#666] hover:text-[#EF4444] transition p-1 cursor-pointer"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
+                  {/* Movie Meta Information */}
+                  <div className="flex-1 min-w-0 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="text-[9px] uppercase font-bold text-[#FFC914] tracking-wider">
+                          MOVIE TICKETS
+                        </span>
                       </div>
+                      <h4 className="font-black text-sm text-white truncate" title={activeMovie?.title}>
+                        {activeMovie?.title || "Movie"}
+                      </h4>
+                      <p className="text-[11px] text-[#A1A1AA] flex items-center gap-1.5 mt-0.5 truncate">
+                        <span className="text-[#FFC914] font-semibold">{activeMovie?.language || "Tamil"}</span>
+                        <span>•</span>
+                        <span className="text-white font-medium">{activeShow?.format || "Dolby Atmos 2D"}</span>
+                      </p>
+                      <p className="text-[10px] text-[#888] truncate mt-0.5">
+                        {activeScreenName}
+                      </p>
                     </div>
-                  ))}
-                </div>
-              )}
 
-              {/* Price Calculation */}
+                    {/* Date & Time pill */}
+                    <div className="flex items-center gap-2 text-[10px] text-[#ccc] bg-[#111] px-2 py-1 rounded border border-[#262626] mt-1.5">
+                      <Calendar className="w-3 h-3 text-[#FFC914] shrink-0" />
+                      <span className="truncate">{activeShow?.date || selectedDate || "Today"}</span>
+                      <span>•</span>
+                      <Clock className="w-3 h-3 text-[#FFC914] shrink-0" />
+                      <span className="font-bold text-white">{activeShow?.time || "07:00 PM"}</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Seats & Ticket Rate Bar */}
+                <div className="pt-2.5 border-t border-[#292929] flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-1.5 min-w-0 flex-1 pr-2">
+                    <Ticket className="w-3.5 h-3.5 text-[#FFC914] shrink-0" />
+                    <span className="text-[11px] text-[#888]">Seats:</span>
+                    <span className="font-mono text-[#FFC914] font-bold text-xs truncate bg-[#101010] px-1.5 py-0.5 rounded border border-[#2a2a2a]">
+                      {selectedSeats.length > 0
+                        ? selectedSeats.map((s) => s.id).join(", ")
+                        : "D9, D10"}
+                    </span>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-[10px] text-[#888] block leading-none">
+                      {effectiveSeatsCount} {effectiveSeatsCount === 1 ? "Ticket" : "Tickets"}
+                    </span>
+                    <span className="font-black text-white text-xs mt-0.5 block">
+                      ₹{effectiveTicketPrice}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. FOOD & BEVERAGES BASKET */}
+              <div className="space-y-2.5 pt-1">
+                <div className="flex items-center justify-between border-b border-[#242424] pb-2">
+                  <div className="flex items-center gap-2">
+                    <ShoppingBag className="w-4 h-4 text-[#FFC914]" />
+                    <h4 className="font-bold text-xs text-white">Food & Refreshments</h4>
+                  </div>
+                  <span className="text-[10px] bg-[#222] px-2 py-0.5 rounded text-[#888] font-mono">
+                    {totalItems} {totalItems === 1 ? "item" : "items"}
+                  </span>
+                </div>
+
+                {foodCart.length === 0 ? (
+                  <div className="py-4 px-3 text-center rounded-xl bg-[#181818] border border-[#262626] space-y-1">
+                    <UtensilsCrossed className="w-5 h-5 text-[#444] mx-auto mb-1" />
+                    <p className="text-xs font-semibold text-[#888]">No snacks added yet (Optional)</p>
+                    <p className="text-[10px] text-[#666]">
+                      Select popcorn, drinks, or combos on the left, or skip directly to payment.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+                    {foodCart.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center justify-between text-xs bg-[#1a1a1a] p-2 rounded-xl border border-[#2a2a2a]"
+                      >
+                        <div className="space-y-0.5 flex-1 pr-2 min-w-0">
+                          <div className="font-bold text-white truncate">{item.name}</div>
+                          <div className="text-[10px] text-[#888]">
+                            ₹{item.price} × {item.quantity} = ₹{item.price * item.quantity}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <div className="flex items-center bg-[#252525] rounded-lg border border-[#3a3a3a] px-1.5 py-0.5">
+                            <button
+                              type="button"
+                              onClick={() => updateCartQty(item.id, -1)}
+                              className="text-[#aaa] hover:text-white cursor-pointer"
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="w-5 text-center font-bold text-white text-[11px]">
+                              {item.quantity}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => updateCartQty(item.id, 1)}
+                              className="text-[#FFC914] hover:text-white cursor-pointer"
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => removeFromCart(item.id)}
+                            className="text-[#666] hover:text-[#EF4444] transition p-1 cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* 3. ORDER PRICING BREAKDOWN */}
               <div className="pt-3 border-t border-[#292929] space-y-2 text-xs">
                 <div className="flex justify-between text-[#888]">
-                  <span>Cinema Food Total</span>
-                  <span className="font-bold text-white">₹{totalFoodPrice}</span>
+                  <span>Movie Tickets ({effectiveSeatsCount})</span>
+                  <span className="font-bold text-white">₹{effectiveTicketPrice}</span>
                 </div>
                 <div className="flex justify-between text-[#888]">
-                  <span>Selected Seats ({selectedSeats.length})</span>
-                  <span className="font-mono text-white">
-                    {selectedSeats.map((s) => s.id).join(", ") || "None"}
+                  <span>Cinema Food & Drinks ({totalItems})</span>
+                  <span className="font-bold text-white">₹{totalFoodPrice}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm font-black text-white pt-2.5 border-t border-[#262626]">
+                  <span>Estimated Total</span>
+                  <span className="text-base text-[#FFC914] font-black">
+                    ₹{effectiveGrandTotal}
                   </span>
                 </div>
               </div>
 
-              {/* Action Buttons for Desktop */}
+              {/* 4. ACTION BUTTONS */}
               <div className="space-y-2 pt-2">
                 <button
                   type="button"
                   onClick={handleContinue}
-                  className="w-full py-3 rounded-xl bg-[#FFC914] hover:bg-[#EAB308] text-black font-extrabold text-xs transition shadow-lg shadow-[#FFC914]/20 flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-3 rounded-xl bg-[#FFC914] hover:bg-[#EAB308] text-black font-extrabold text-xs transition shadow-lg shadow-[#FFC914]/20 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
                 >
                   <span>
                     {foodCart.length > 0 ? "Continue to Delivery Mode" : "Continue to Payment"}
                   </span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                 </button>
 
                 <button
@@ -409,7 +616,7 @@ export const FoodSelectionPage = () => {
                   onClick={handleSkip}
                   className="w-full py-2.5 rounded-xl bg-[#202020] hover:bg-[#282828] text-[#A1A1AA] hover:text-white font-semibold text-xs border border-[#2e2e2e] transition cursor-pointer"
                 >
-                  Skip Food & Pay Tickets Only
+                  {foodCart.length > 0 ? "Clear Snacks & Pay Tickets Only" : "Skip Snacks & Pay Tickets Only"}
                 </button>
               </div>
             </div>
@@ -423,19 +630,33 @@ export const FoodSelectionPage = () => {
       {/* ======================================================== */}
       <div className="fixed bottom-0 inset-x-0 z-50 lg:hidden bg-[#0c0c0c]/95 backdrop-blur-xl border-t border-[#292929] px-3.5 py-3 shadow-[0_-8px_30px_rgba(0,0,0,0.85)]">
         {totalItems === 0 ? (
-          /* When no snacks are selected: Skip & Continue is prominent action */
+          /* When no snacks are selected: Show Ticket Rate and Clear Skip & Pay action */
           <div className="flex items-center justify-between gap-3">
+            <div className="flex-1 min-w-0 pr-1">
+              <div className="flex items-center gap-1.5">
+                <Ticket className="w-3.5 h-3.5 text-[#FFC914] shrink-0" />
+                <span className="text-[11px] text-[#A1A1AA] truncate">
+                  {effectiveSeatsCount} Tickets ({selectedSeats.length > 0 ? selectedSeats.map((s) => s.id).join(", ") : "D9, D10"})
+                </span>
+              </div>
+              <div className="text-sm font-black text-white mt-0.5 flex items-center gap-1.5">
+                <span>Total:</span>
+                <span className="text-[#FFC914]">₹{effectiveTicketPrice}</span>
+                <span className="text-[10px] text-[#777] font-normal">(No snacks)</span>
+              </div>
+            </div>
+
             <button
               type="button"
               onClick={handleSkip}
-              className="flex-1 py-3 px-4 rounded-xl bg-[#FFC914] hover:bg-[#EAB308] text-black font-black text-xs shadow-xl shadow-[#FFC914]/25 transition flex items-center justify-center gap-2 cursor-pointer active:scale-[0.99]"
+              className="py-3 px-5 rounded-xl bg-[#FFC914] hover:bg-[#EAB308] text-black font-black text-xs shadow-xl shadow-[#FFC914]/25 transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-95 shrink-0"
             >
-              <span>Skip Snacks & Continue</span>
+              <span>Skip & Pay</span>
               <ArrowRight className="w-4 h-4 stroke-[2.5]" />
             </button>
           </div>
         ) : (
-          /* When snacks are selected: Show Skip on Left, Count & Total, and Continue to Delivery on Right */
+          /* When snacks are selected: Show Tickets + Food breakdown and Continue */
           <div className="flex items-center justify-between gap-2.5">
             {/* Left: Skip Snacks option */}
             <button
@@ -446,28 +667,123 @@ export const FoodSelectionPage = () => {
               <span>Skip Snacks</span>
             </button>
 
-            {/* Middle: Cart item count and total */}
-            <div className="flex-1 text-right pr-1">
-              <span className="text-[10px] text-[#888] font-bold block leading-none">
-                {totalItems} {totalItems === 1 ? "Item" : "Items"} Added
-              </span>
+            {/* Middle: Cart breakdown */}
+            <div
+              onClick={() => setShowMobileSummaryModal(true)}
+              className="flex-1 text-center cursor-pointer px-1 py-0.5 rounded-lg active:bg-[#1a1a1a]"
+            >
+              <div className="text-[10px] text-[#A1A1AA] leading-tight flex items-center justify-center gap-1">
+                <span>{effectiveSeatsCount} Seats + {totalItems} Snacks</span>
+                <ChevronUp className="w-3 h-3 text-[#FFC914]" />
+              </div>
               <span className="text-sm font-black text-[#FFC914] leading-tight block mt-0.5">
-                ₹{totalFoodPrice}
+                ₹{effectiveGrandTotal}
               </span>
             </div>
 
-            {/* Right: Continue to Delivery as prominent primary action */}
+            {/* Right: Continue to Delivery */}
             <button
               type="button"
               onClick={handleContinue}
               className="py-2.5 px-4 rounded-xl bg-[#FFC914] hover:bg-[#EAB308] text-black font-black text-xs shadow-lg shadow-[#FFC914]/25 flex items-center gap-1.5 shrink-0 transition active:scale-95 cursor-pointer"
             >
-              <span>Continue to Delivery</span>
+              <span>Continue</span>
               <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
             </button>
           </div>
         )}
       </div>
+
+      {/* ======================================================== */}
+      {/* 4. MOBILE ORDER SUMMARY SLIDE-OVER MODAL (OPTIONAL POPUP) */}
+      {/* ======================================================== */}
+      {showMobileSummaryModal && (
+        <div className="fixed inset-0 z-50 lg:hidden flex flex-col justify-end bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div
+            className="flex-1"
+            onClick={() => setShowMobileSummaryModal(false)}
+          />
+          <div className="bg-[#141414] rounded-t-3xl border-t border-[#292929] p-5 max-h-[80vh] overflow-y-auto space-y-4">
+            <div className="flex items-center justify-between border-b border-[#292929] pb-3">
+              <div className="flex items-center gap-2">
+                <Film className="w-4 h-4 text-[#FFC914]" />
+                <h3 className="font-black text-sm text-white">Cart Breakdown</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowMobileSummaryModal(false)}
+                className="p-1 rounded-full bg-[#202020] text-[#aaa] hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Movie Info */}
+            <div className="flex gap-3 bg-[#1a1a1a] p-3 rounded-xl border border-[#2a2a2a]">
+              <img
+                src={activeMovie?.poster}
+                alt={activeMovie?.title}
+                className="w-12 h-16 rounded-lg object-cover border border-[#333] shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <h4 className="font-bold text-xs text-white truncate">{activeMovie?.title}</h4>
+                <p className="text-[10px] text-[#888]">{activeScreenName}</p>
+                <p className="text-[10px] text-[#aaa] mt-0.5">
+                  Seats: {selectedSeats.length > 0 ? selectedSeats.map((s) => s.id).join(", ") : "D9, D10"}
+                </p>
+                <p className="text-xs font-bold text-[#FFC914] mt-1">₹{effectiveTicketPrice}</p>
+              </div>
+            </div>
+
+            {/* Snacks List */}
+            {foodCart.length > 0 && (
+              <div className="space-y-2">
+                <h4 className="text-xs font-bold text-white">Selected Snacks ({totalItems})</h4>
+                <div className="space-y-1.5">
+                  {foodCart.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex justify-between items-center bg-[#1a1a1a] p-2 rounded-lg text-xs"
+                    >
+                      <span className="text-white">{item.quantity}x {item.name}</span>
+                      <span className="text-[#FFC914] font-bold">₹{item.price * item.quantity}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Total */}
+            <div className="pt-2 border-t border-[#292929] space-y-1 text-xs">
+              <div className="flex justify-between text-[#888]">
+                <span>Tickets Total:</span>
+                <span className="text-white">₹{effectiveTicketPrice}</span>
+              </div>
+              <div className="flex justify-between text-[#888]">
+                <span>Snacks Total:</span>
+                <span className="text-white">₹{totalFoodPrice}</span>
+              </div>
+              <div className="flex justify-between font-black text-sm text-white pt-2 border-t border-[#222]">
+                <span>Total Amount:</span>
+                <span className="text-[#FFC914]">₹{effectiveGrandTotal}</span>
+              </div>
+            </div>
+
+            {/* Button */}
+            <button
+              type="button"
+              onClick={() => {
+                setShowMobileSummaryModal(false);
+                handleContinue();
+              }}
+              className="w-full py-3 rounded-xl bg-[#FFC914] text-black font-black text-xs flex items-center justify-center gap-1.5"
+            >
+              <span>Continue to Next Step</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
