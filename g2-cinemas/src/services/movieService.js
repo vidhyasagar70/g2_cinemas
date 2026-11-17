@@ -1,10 +1,10 @@
 import { INITIAL_MOVIES } from "../data/movies";
-import { INITIAL_SHOWS } from "../data/shows";
+import { INITIAL_SHOWS, ensureActiveShows } from "../data/shows";
 
 const MOVIES_KEY = "g2_cinemas_movies";
 const SHOWS_KEY = "g2_cinemas_shows";
 const CATALOG_VERSION_KEY = "g2_cinemas_catalogue_version";
-const CURRENT_CATALOG_VERSION = "v7_two_dolby_atmos_screens";
+const CURRENT_CATALOG_VERSION = "v8_dynamic_rolling_shows_7days";
 
 // Check and perform seed migration if old version exists
 const checkCatalogueVersion = () => {
@@ -91,17 +91,16 @@ export const movieService = {
     try {
       checkCatalogueVersion();
       const data = localStorage.getItem(SHOWS_KEY);
-      if (!data) return INITIAL_SHOWS;
-      const parsed = JSON.parse(data);
-      // Safety check: if stored shows reference obsolete movie IDs (mov-1 from old dune seed), refresh
-      const hasObsolete = parsed.some((s) =>
-        s.movieId === "mov-1" || s.movieId === "mov-2" || s.movieId === "mov-3" || s.movieId === "mov-4" || s.movieId === "mov-5" || s.movieId === "mov-6"
-      );
-      if (hasObsolete) {
-        localStorage.setItem(SHOWS_KEY, JSON.stringify(INITIAL_SHOWS));
-        return INITIAL_SHOWS;
+      const parsed = data ? JSON.parse(data) : INITIAL_SHOWS;
+
+      // Always ensure shows are active and present for the rolling 7-day schedule
+      const activeShows = ensureActiveShows(parsed, 7);
+
+      // If activeShows were regenerated or modified, persist to localStorage
+      if (!data || activeShows.length !== (parsed?.length || 0)) {
+        movieService.saveShows(activeShows);
       }
-      return parsed;
+      return activeShows;
     } catch {
       return INITIAL_SHOWS;
     }

@@ -15,7 +15,7 @@ import {
 import { useApp } from "../../context/AppContext";
 import { useBooking } from "../../context/BookingContext";
 import { useAuth } from "../../context/AuthContext";
-import { getAvailableDates } from "../../data/shows";
+import { getAvailableDates, formatShowDate } from "../../data/shows";
 import { BookingProgress } from "../../components/booking/BookingProgress";
 import toast from "react-hot-toast";
 
@@ -27,8 +27,15 @@ export const MovieDetailsPage = () => {
   const { isAuthenticated } = useAuth();
 
   const movie = movies.find((m) => m.id === id) || movies[0];
-  const availableDates = useMemo(() => getAvailableDates(), []);
-  const [selectedDate, setSelectedDate] = useState(availableDates[0].dateStr);
+  const availableDates = useMemo(() => getAvailableDates(7), []);
+  const [selectedDate, setSelectedDate] = useState(availableDates[0]?.dateStr || "");
+
+  // Ensure selectedDate stays valid within availableDates
+  React.useEffect(() => {
+    if (availableDates.length > 0 && !availableDates.some((d) => d.dateStr === selectedDate)) {
+      setSelectedDate(availableDates[0].dateStr);
+    }
+  }, [availableDates, selectedDate]);
 
   // Filter shows for this movie and selected date
   const filteredShows = useMemo(() => {
@@ -293,7 +300,7 @@ export const MovieDetailsPage = () => {
                 {/* Showtimes Grid */}
                 {group.shows.length === 0 ? (
                   <p className="text-xs text-[#666] italic py-2">
-                    No shows scheduled on this screen for {selectedDate}.
+                    No shows scheduled on this screen for {formatShowDate(selectedDate)}.
                   </p>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-2 sm:gap-3">

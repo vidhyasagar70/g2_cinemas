@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { useApp } from "../../context/AppContext";
 import { TicketModal } from "../../components/booking/TicketModal";
+import { formatShowDate } from "../../data/shows";
 import toast from "react-hot-toast";
 
 export const AdminBookingsPage = () => {
@@ -186,7 +187,7 @@ export const AdminBookingsPage = () => {
                     {b.movieTitle}
                   </td>
                   <td className="py-3.5 px-4 text-[#888]">
-                    <span className="text-white block">{b.showDate}</span>
+                    <span className="text-white block">{formatShowDate(b.showDate)}</span>
                     <span className="text-[10px] text-[#777]">{b.showTime}</span>
                   </td>
                   <td className="py-3.5 px-4">

@@ -1,3 +1,8 @@
+import { formatDateStr } from "./shows";
+
+const todayStr = formatDateStr(new Date());
+const yesterdayStr = formatDateStr(new Date(Date.now() - 86400000));
+
 export const INITIAL_BOOKINGS = [
   {
     id: "G2-82410",
@@ -10,7 +15,7 @@ export const INITIAL_BOOKINGS = [
     moviePoster: "/images/movies/mookuthi-amman-2-poster.jpg",
     screenId: "screen-1",
     screenName: "Screen 1 - Dolby Atmos",
-    showDate: new Date().toISOString().split("T")[0],
+    showDate: todayStr,
     showTime: "06:30 PM",
     seats: ["D5", "D6"],
     ticketCount: 2,
@@ -44,7 +49,7 @@ export const INITIAL_BOOKINGS = [
     moviePoster: "/images/movies/scene-poster.jpg",
     screenId: "screen-2",
     screenName: "Screen 2 - Dolby Atmos",
-    showDate: new Date().toISOString().split("T")[0],
+    showDate: todayStr,
     showTime: "03:45 PM",
     seats: ["E6", "E7"],
     ticketCount: 2,
@@ -79,7 +84,7 @@ export const INITIAL_BOOKINGS = [
     moviePoster: "/images/movies/ramayana-rise-of-a-legend-poster.jpg",
     screenId: "screen-1",
     screenName: "Screen 1 - Dolby Atmos",
-    showDate: new Date().toISOString().split("T")[0],
+    showDate: todayStr,
     showTime: "01:45 PM",
     seats: ["G5", "G6", "G7"],
     ticketCount: 3,
@@ -107,7 +112,7 @@ export const INITIAL_BOOKINGS = [
     moviePoster: "/images/movies/ramayana-rise-of-a-legend-poster.jpg",
     screenId: "screen-1",
     screenName: "Screen 1 - Dolby Atmos",
-    showDate: new Date(Date.now() - 86400000).toISOString().split("T")[0],
+    showDate: yesterdayStr,
     showTime: "08:15 PM",
     seats: ["D2", "D3"],
     ticketCount: 2,

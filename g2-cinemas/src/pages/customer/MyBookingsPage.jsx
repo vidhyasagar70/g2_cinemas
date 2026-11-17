@@ -25,6 +25,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import { TicketModal } from "../../components/booking/TicketModal";
+import { formatShowDate } from "../../data/shows";
 
 export const MyBookingsPage = () => {
   const { customerBookings, cancelBooking, customerOrders } = useApp();
@@ -319,7 +320,7 @@ export const MyBookingsPage = () => {
                         <span>•</span>
                         <span className="flex items-center gap-1">
                           <Calendar className="w-3.5 h-3.5 text-[#FFC914]" />
-                          {b.showDate}
+                          {formatShowDate(b.showDate)}
                         </span>
                         <span>•</span>
                         <span className="flex items-center gap-1">

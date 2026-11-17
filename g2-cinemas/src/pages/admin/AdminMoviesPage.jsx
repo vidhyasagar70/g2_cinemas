@@ -15,6 +15,7 @@ import {
   ChevronDown
 } from "lucide-react";
 import { useApp } from "../../context/AppContext";
+import { formatDateStr, formatShowDate, getAvailableDates } from "../../data/shows";
 import toast from "react-hot-toast";
 
 export const AdminMoviesPage = () => {
@@ -34,6 +35,8 @@ export const AdminMoviesPage = () => {
   const [showMovieModal, setShowMovieModal] = useState(false);
   const [showShowModal, setShowShowModal] = useState(false);
   const [editingMovie, setEditingMovie] = useState(null);
+  const availableDates = useMemo(() => getAvailableDates(7), []);
+  const [showDateFilter, setShowDateFilter] = useState("ALL");
 
   // Movie Form State
   const [movieForm, setMovieForm] = useState({
@@ -57,7 +60,7 @@ export const AdminMoviesPage = () => {
   const [showForm, setShowForm] = useState({
     movieId: movies[0]?.id || "",
     screenId: screens[0]?.id || "screen-1",
-    date: new Date().toISOString().split("T")[0],
+    date: formatDateStr(new Date()),
     time: "07:00 PM",
     format: "Dolby Atmos 2D - Tamil",
     status: "Available"
@@ -292,56 +295,89 @@ export const AdminMoviesPage = () => {
 
       {/* Tab 2: Shows Schedule Management */}
       {activeTab === "SHOWS" && (
-        <div className="bg-[#141414] rounded-3xl border border-[#292929] overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-[#292929] bg-[#101010] text-[#777] uppercase text-[10px] tracking-wider">
-                  <th className="py-3 px-4">Movie</th>
-                  <th className="py-3 px-4">Auditorium Screen</th>
-                  <th className="py-3 px-4">Date</th>
-                  <th className="py-3 px-4">Time</th>
-                  <th className="py-3 px-4">Format</th>
-                  <th className="py-3 px-4">Occupancy</th>
-                  <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4 text-right">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#222]">
-                {shows.map((show) => {
-                  const movie = movies.find((m) => m.id === show.movieId) || {};
-                  return (
-                    <tr key={show.id} className="hover:bg-[#1a1a1a] transition">
-                      <td className="py-3 px-4 font-bold text-white">{movie.title || "Movie"}</td>
-                      <td className="py-3 px-4 text-[#ddd]">{show.screenName}</td>
-                      <td className="py-3 px-4 text-[#888]">{show.date}</td>
-                      <td className="py-3 px-4 font-bold text-[#FFC914]">{show.time}</td>
-                      <td className="py-3 px-4 text-[#aaa]">{show.format}</td>
-                      <td className="py-3 px-4 text-[#888]">
-                        {show.bookedSeats?.length || 0} Booked
-                      </td>
-                      <td className="py-3 px-4">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#202020] text-[#FFC914]">
-                          {show.status}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <button
-                          onClick={() => {
-                            if (window.confirm("Remove this showtime from schedule?")) {
-                              deleteShow(show.id);
-                            }
-                          }}
-                          className="p-1 rounded-lg text-[#888] hover:text-red-400"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+        <div className="space-y-4">
+          {/* Date Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+            <button
+              type="button"
+              onClick={() => setShowDateFilter("ALL")}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                showDateFilter === "ALL"
+                  ? "bg-[#FFC914] text-black shadow-md shadow-[#FFC914]/20"
+                  : "bg-[#181818] text-[#888] hover:text-white border border-[#282828]"
+              }`}
+            >
+              All Shows ({shows.length})
+            </button>
+            {availableDates.map((d) => (
+              <button
+                key={d.dateStr}
+                type="button"
+                onClick={() => setShowDateFilter(d.dateStr)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
+                  showDateFilter === d.dateStr
+                    ? "bg-[#FFC914] text-black shadow-md shadow-[#FFC914]/20"
+                    : "bg-[#181818] text-[#888] hover:text-white border border-[#282828]"
+                }`}
+              >
+                {d.day} ({d.dateNum} {d.month})
+              </button>
+            ))}
+          </div>
+
+          <div className="bg-[#141414] rounded-3xl border border-[#292929] overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead>
+                  <tr className="border-b border-[#292929] bg-[#101010] text-[#777] uppercase text-[10px] tracking-wider">
+                    <th className="py-3 px-4">Movie</th>
+                    <th className="py-3 px-4">Auditorium Screen</th>
+                    <th className="py-3 px-4">Date</th>
+                    <th className="py-3 px-4">Time</th>
+                    <th className="py-3 px-4">Format</th>
+                    <th className="py-3 px-4">Occupancy</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4 text-right">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#222]">
+                  {shows
+                    .filter((s) => showDateFilter === "ALL" || s.date === showDateFilter)
+                    .map((show) => {
+                      const movie = movies.find((m) => m.id === show.movieId) || {};
+                      return (
+                        <tr key={show.id} className="hover:bg-[#1a1a1a] transition">
+                          <td className="py-3 px-4 font-bold text-white">{movie.title || "Movie"}</td>
+                          <td className="py-3 px-4 text-[#ddd]">{show.screenName}</td>
+                          <td className="py-3 px-4 text-[#888]">{formatShowDate(show.date)}</td>
+                          <td className="py-3 px-4 font-bold text-[#FFC914]">{show.time}</td>
+                          <td className="py-3 px-4 text-[#aaa]">{show.format}</td>
+                          <td className="py-3 px-4 text-[#888]">
+                            {show.bookedSeats?.length || 0} Booked
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#202020] text-[#FFC914]">
+                              {show.status}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <button
+                              onClick={() => {
+                                if (window.confirm("Remove this showtime from schedule?")) {
+                                  deleteShow(show.id);
+                                }
+                              }}
+                              className="p-1 rounded-lg text-[#888] hover:text-red-400"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

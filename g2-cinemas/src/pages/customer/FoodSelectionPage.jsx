@@ -23,6 +23,7 @@ import { useBooking } from "../../context/BookingContext";
 import { useAuth } from "../../context/AuthContext";
 import { PRODUCT_CATEGORIES } from "../../data/products";
 import { BookingProgress } from "../../components/booking/BookingProgress";
+import { formatShowDate } from "../../data/shows";
 import toast from "react-hot-toast";
 
 export const FoodSelectionPage = () => {
@@ -201,7 +202,7 @@ export const FoodSelectionPage = () => {
 
               <div className="flex items-center gap-2 text-[10px] text-[#bbb]">
                 <Calendar className="w-3 h-3 text-[#FFC914] shrink-0" />
-                <span>{activeShow?.date || selectedDate || "Today"}</span>
+                <span>{formatShowDate(activeShow?.date || selectedDate)}</span>
                 <span>•</span>
                 <Clock className="w-3 h-3 text-[#FFC914] shrink-0" />
                 <span className="font-bold text-white">{activeShow?.time || "07:00 PM"}</span>
@@ -481,7 +482,7 @@ export const FoodSelectionPage = () => {
                     {/* Date & Time pill */}
                     <div className="flex items-center gap-2 text-[10px] text-[#ccc] bg-[#111] px-2 py-1 rounded border border-[#262626] mt-1.5">
                       <Calendar className="w-3 h-3 text-[#FFC914] shrink-0" />
-                      <span className="truncate">{activeShow?.date || selectedDate || "Today"}</span>
+                      <span className="truncate">{formatShowDate(activeShow?.date || selectedDate)}</span>
                       <span>•</span>
                       <Clock className="w-3 h-3 text-[#FFC914] shrink-0" />
                       <span className="font-bold text-white">{activeShow?.time || "07:00 PM"}</span>

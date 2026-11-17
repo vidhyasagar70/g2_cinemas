@@ -203,22 +203,23 @@ export const POSNewTicketPage = () => {
               </span>
 
               {/* Date Pills */}
-              <div className="flex gap-1.5 overflow-x-auto pb-1">
-                {availableDates.slice(0, 4).map((d) => (
+              <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+                {availableDates.map((d) => (
                   <button
                     key={d.dateStr}
+                    type="button"
                     onClick={() => {
                       setSelectedDate(d.dateStr);
                       setSelectedShow(null);
                       setSelectedSeats([]);
                     }}
-                    className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
+                    className={`px-3 py-1 rounded-xl text-xs font-bold transition whitespace-nowrap cursor-pointer ${
                       selectedDate === d.dateStr
                         ? "bg-[#FFC914] text-black"
                         : "bg-[#202020] text-[#888] hover:text-white"
                     }`}
                   >
-                    {d.day}
+                    {d.day} ({d.dateNum} {d.month})
                   </button>
                 ))}
               </div>

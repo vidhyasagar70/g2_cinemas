@@ -1,6 +1,7 @@
 import React from "react";
 import { QRCodeSVG } from "qrcode.react";
 import { X, Printer, Download, Film, CheckCircle2, MapPin, Calendar, Clock, Armchair } from "lucide-react";
+import { formatShowDate } from "../../data/shows";
 
 export const TicketModal = ({ booking, onClose }) => {
   if (!booking) return null;
@@ -79,7 +80,7 @@ export const TicketModal = ({ booking, onClose }) => {
               <div className="flex items-center gap-2 text-xs text-[#888]">
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3.5 h-3.5 text-[#FFC914]" />
-                  {booking.showDate}
+                  {formatShowDate(booking.showDate)}
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">

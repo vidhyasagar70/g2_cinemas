@@ -6,6 +6,7 @@ import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import { SeatLayout } from "../../components/seats/SeatLayout";
 import { BookingProgress } from "../../components/booking/BookingProgress";
+import { formatShowDate } from "../../data/shows";
 import toast from "react-hot-toast";
 
 export const SeatSelectionPage = () => {
@@ -81,7 +82,7 @@ export const SeatSelectionPage = () => {
                 <span>•</span>
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3.5 h-3.5" />
-                  {activeShow?.date}
+                  {formatShowDate(activeShow?.date)}
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1">

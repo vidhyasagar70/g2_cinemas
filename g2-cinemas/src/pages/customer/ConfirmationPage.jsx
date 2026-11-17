@@ -16,6 +16,7 @@ import {
   Share2
 } from "lucide-react";
 import { useApp } from "../../context/AppContext";
+import { formatShowDate } from "../../data/shows";
 
 export const ConfirmationPage = () => {
   const { bookingId } = useParams();
@@ -112,7 +113,7 @@ export const ConfirmationPage = () => {
                 <span className="text-[11px] text-[#666] uppercase block">Date</span>
                 <span className="font-bold text-white flex items-center gap-1 mt-0.5">
                   <Calendar className="w-3.5 h-3.5 text-[#FFC914]" />
-                  {booking?.showDate}
+                  {formatShowDate(booking?.showDate)}
                 </span>
               </div>
 

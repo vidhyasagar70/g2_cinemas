@@ -19,6 +19,7 @@ import { useBooking } from "../../context/BookingContext";
 import { useApp } from "../../context/AppContext";
 import { useAuth } from "../../context/AuthContext";
 import { BookingProgress } from "../../components/booking/BookingProgress";
+import { formatShowDate } from "../../data/shows";
 import toast from "react-hot-toast";
 
 export const CheckoutPage = () => {
@@ -181,7 +182,7 @@ export const CheckoutPage = () => {
 
               <div className="flex items-center gap-2 text-[10px] text-[#bbb]">
                 <Calendar className="w-3 h-3 text-[#FFC914] shrink-0" />
-                <span>{activeShow?.date || selectedDate || "Today"}</span>
+                <span>{formatShowDate(activeShow?.date || selectedDate)}</span>
                 <span>•</span>
                 <Clock className="w-3 h-3 text-[#FFC914] shrink-0" />
                 <span className="font-bold text-white">{activeShow?.time || "07:00 PM"}</span>
@@ -445,7 +446,7 @@ export const CheckoutPage = () => {
                 <div className="flex justify-between">
                   <span className="text-[#888]">Date & Time</span>
                   <span className="text-white font-bold">
-                    {activeShow?.date || selectedDate || "Today"} • {activeShow?.time || "07:00 PM"}
+                    {formatShowDate(activeShow?.date || selectedDate)} • {activeShow?.time || "07:00 PM"}
                   </span>
                 </div>
                 <div className="flex justify-between">
